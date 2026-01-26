@@ -2,13 +2,13 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Confirme sua presença 🎂</title>
     <style>
         :root {
             --primary: #8e44ad;
             --secondary: #9b59b6;
-            --bg: #f5f6fa;
+            --bg: #f3e5f5;
             --text: #2f3640;
             --white: #ffffff;
         }
@@ -19,38 +19,41 @@
         }
 
         body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #f3e5f5; /* Uma cor roxa clara que combina com o tema */
-    background-image: url('fundo.jpg');
-    background-size: auto; /* Mantém o tamanho real da imagem */
-    background-position: center; 
-    background-repeat: no-repeat; /* Não repete a imagem */
-    background-attachment: fixed; 
-    
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 20px;
-}
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            background-image: url('fundo.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            background-size: auto; /* Padrão para Desktop */
+            
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden; /* Remove barra horizontal */
+        }
 
         .card {
-            background: rgba(255, 255, 255, 0.90); 
-            backdrop-filter: blur(10px); 
+            /* Fundo mais transparente para ver melhor a imagem (0.85 em vez de 0.90) */
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(8px); 
             width: 100%;
             max-width: 450px;
             padding: 30px 25px;
             border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            z-index: 1;
         }
 
         h1 {
             font-size: 1.8rem;
             color: var(--primary);
             text-align: center;
-            margin-top: 0;
-            margin-bottom: 10px;
+            margin: 0 0 10px 0;
         }
 
         p.subtitle {
@@ -80,11 +83,7 @@
             border-radius: 12px;
             font-size: 16px; 
             outline: none;
-            transition: border-color 0.3s ease;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--primary);
+            background: white;
         }
 
         button {
@@ -97,12 +96,11 @@
             font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s active, background 0.3s;
+            transition: all 0.3s ease;
         }
 
         button:active {
-            transform: scale(0.98); 
+            transform: scale(0.96); 
             background: var(--secondary);
         }
 
@@ -113,10 +111,18 @@
             min-height: 24px;
         }
 
-        @media (max-width: 360px) {
-            .card {
-                padding: 20px 15px;
+        /* AJUSTES ESPECÍFICOS PARA CELULAR */
+        @media (max-width: 480px) {
+            body {
+                background-size: cover; /* Faz a imagem preencher a tela no celular */
+                padding: 15px;
             }
+
+            .card {
+                padding: 25px 20px;
+                background: rgba(255, 255, 255, 0.80); /* Ainda mais transparente no mobile */
+            }
+
             h1 {
                 font-size: 1.5rem;
             }
@@ -150,7 +156,6 @@
 
         <button type="submit" id="btnEnviar">Enviar Confirmação</button>
     </form>
-
     <div id="status"></div>
 </div>
 
@@ -180,18 +185,14 @@
             await fetch(APPS_SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors', 
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
             });
 
             status.innerText = "✅ Tudo pronto! Te vemos lá!";
             status.style.color = "#27ae60";
             form.reset();
-
         } catch (err) {
-            console.error("Erro no envio:", err);
             status.innerText = "❌ Ops! Tente novamente.";
             status.style.color = "#e74c3c";
         } finally {
@@ -200,6 +201,5 @@
         }
     });
 </script>
-
 </body>
 </html>
