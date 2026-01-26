@@ -3,140 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmação de Presença</title>
+    <title>Confirme sua presença 🎂</title>
     <style>
         :root {
-            --primary-color: #6c5ce7;
-            --bg-color: #f0f2f5;
-            --text-color: #2d3436;
+            --primary: #8e44ad;
+            --secondary: #9b59b6;
+            --bg: #f5f6fa;
+            --text: #2f3640;
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; /* Remove brilho azul ao tocar no mobile */
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            padding: 20px;
         }
 
-        .container {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        .card {
+            background: rgba(255, 255, 255, 0.95);
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
+            padding: 30px 25px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
 
-        h2 {
+        h1 {
+            font-size: 1.8rem;
+            color: var(--primary);
             text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #636e72;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 18px;
         }
 
         label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 8px;
             font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
         }
 
+        /* Inputs otimizados para toque no celular */
         input, select {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
+            height: 50px; /* Altura ideal para dedos */
+            padding: 12px 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 16px; /* Evita que o iPhone dê zoom automático ao focar */
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
         }
 
         button {
             width: 100%;
-            padding: 1rem;
-            background-color: var(--primary-color);
+            height: 55px;
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background 0.3s;
+            margin-top: 10px;
+            transition: transform 0.2s active, background 0.3s;
         }
 
-        button:hover {
-            background-color: #5849c4;
+        button:active {
+            transform: scale(0.98); /* Feedback tátil de clique */
+            background: var(--secondary);
         }
 
-        #message {
-            margin-top: 1rem;
+        #status {
+            margin-top: 15px;
             text-align: center;
-            display: none;
+            font-weight: 600;
+            min-height: 24px;
+        }
+
+        /* Estilo para celulares muito pequenos */
+        @media (max-width: 360px) {
+            .card {
+                padding: 20px 15px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>🎉 Aniversário de Sofia</h2>
+<div class="card">
+    <h1>Confirmar presença no aniversário de Sofia</h1>
+    <p class="subtitle">Prepare o seu melhor look para a festa! ✨</p>
+
     <form id="rsvpForm">
         <div class="form-group">
-            <label for="nome">Nome Completooo</label>
-            <input type="text" id="nome" name="nome" placeholder="Ex: João Silva" required>
+            <label for="nome">Qual o seu nome?</label>
+            <input type="text" id="nome" placeholder="Seu nome completo" required>
         </div>
 
         <div class="form-group">
-            <label for="presenca">Você irá comparecer?</label>
-            <select id="presenca" name="presenca" required>
-                <option value="">Selecione uma opção</option>
-                <option value="sim">Sim, com certeza!</option>
-                <option value="nao">Infelizmente não poderei</option>
+            <label for="presenca">Você vem?</label>
+            <select id="presenca" required>
+                <option value="Sim">Sim, estarei lá!</option>
+                <option value="Não">Infelizmente não vou conseguir</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="acompanhantes">Quantidade de acompanhantes</label>
-            <input type="number" id="acompanhantes" name="acompanhantes" min="0" max="10" value="0">
+            <label for="acompanhantes">Quantos acompanhantes?</label>
+            <input type="number" id="acompanhantes" value="0" min="0" max="5">
         </div>
 
-        <button type="submit" id="btnEnviar">Confirmar Presença</button>
+        <button type="submit" id="btnEnviar">Enviar Confirmação</button>
     </form>
-    <div id="message"></div>
+
+    <div id="status"></div>
 </div>
 
 <script>
     const form = document.getElementById('rsvpForm');
-    const messageDiv = document.getElementById('message');
+    const status = document.getElementById('status');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        const btn = document.getElementById('btnEnviar');
+        btn.disabled = true;
+        btn.innerText = "Enviando...";
+        status.innerText = "Processando seu convite...";
+        status.style.color = "#8e44ad";
 
-        // Organiza os dados em um objeto JSON
-        const formData = {
+        const dados = {
             nome: document.getElementById('nome').value,
             presenca: document.getElementById('presenca').value,
-            acompanhantes: document.getElementById('acompanhantes').value,
-            data_envio: new Date().toISOString()
+            acompanhantes: document.getElementById('acompanhantes').value
         };
 
-        // Simulação de envio para banco de dados
-        console.log("Dados prontos para o banco de dados:", formData);
-        
-        // Aqui você futuramente substituirá pelo seu link do n8n ou API:
-        // const response = await fetch('SUA_URL_AQUI', { method: 'POST', body: JSON.stringify(formData) });
+        try {
+            // Quando subir para a Vercel, mude para: /api/submit
+            const response = await fetch('/api/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
 
-        messageDiv.style.display = 'block';
-        messageDiv.innerHTML = "✨ Enviando confirmação...";
-        messageDiv.style.color = "#6c5ce7";
-
-        // Feedback visual de sucesso
-        setTimeout(() => {
-            messageDiv.innerHTML = "✅ Presença confirmada com sucesso!";
-            form.reset();
-        }, 1500);
+            if (response.ok) {
+                status.innerText = "✅ Tudo pronto! Te vemos lá!";
+                status.style.color = "#27ae60";
+                form.reset();
+            } else {
+                throw new Error();
+            }
+        } catch (err) {
+            status.innerText = "❌ Ops! Tente novamente.";
+            status.style.color = "#e74c3c";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Enviar Confirmação";
+        }
     });
 </script>
 
