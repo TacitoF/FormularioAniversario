@@ -1,0 +1,36 @@
+import qrcode
+from PIL import Image
+
+# 1. Configurações Iniciais
+link_video = "https://seu-site.vercel.app/video.mp4"
+nome_arquivo = "qrcode_video_play.png"
+
+# 2. Criar o QR Code com alta correção de erro (H)
+qr = qrcode.QRCode(
+    version=1,
+    error_correction=qrcode.constants.ERROR_CORRECT_H,
+    box_size=10,
+    border=4,
+)
+qr.add_data(link_video)
+qr.make(fit=True)
+
+# 3. Gerar a imagem base com a cor roxa da Sofia
+img_qr = qr.make_image(fill_color="#8e44ad", back_color="white").convert('RGB')
+
+# 4. Criar ou carregar o ícone de Play
+# Aqui criamos um triângulo simples, mas você pode carregar uma imagem png externa
+width, height = img_qr.size
+logo_size = width // 4  # O ícone ocupará 25% do QR Code
+
+# Criando um fundo branco para o ícone se destacar
+logo_box = Image.new("RGB", (logo_size, logo_size), "white")
+
+# Se você tiver um arquivo 'play.png', use: logo = Image.open("play.png")
+# Por enquanto, usaremos apenas o espaço branco centralizado como exemplo
+pos = ((width - logo_size) // 2, (height - logo_size) // 2)
+img_qr.paste(logo_box, pos)
+
+# 5. Salvar o resultado
+img_qr.save(nome_arquivo)
+print(f"✅ QR Code com ícone gerado: {nome_arquivo}")
