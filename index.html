@@ -15,7 +15,7 @@
 
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Remove brilho azul ao tocar no mobile */
+            -webkit-tap-highlight-color: transparent; 
         }
 
         body {
@@ -65,14 +65,14 @@
             font-size: 0.9rem;
         }
 
-        /* Inputs otimizados para toque no celular */
+        
         input, select {
             width: 100%;
-            height: 50px; /* Altura ideal para dedos */
+            height: 50px; 
             padding: 12px 15px;
             border: 2px solid #eee;
             border-radius: 12px;
-            font-size: 16px; /* Evita que o iPhone dê zoom automático ao focar */
+            font-size: 16px; 
             outline: none;
             transition: border-color 0.3s ease;
         }
@@ -96,7 +96,7 @@
         }
 
         button:active {
-            transform: scale(0.98); /* Feedback tátil de clique */
+            transform: scale(0.98); 
             background: var(--secondary);
         }
 
@@ -107,7 +107,7 @@
             min-height: 24px;
         }
 
-        /* Estilo para celulares muito pequenos */
+        
         @media (max-width: 360px) {
             .card {
                 padding: 20px 15px;
@@ -121,7 +121,7 @@
 <body>
 
 <div class="card">
-    <h1>Confirmar presença no aniversário de Sofia</h1>
+    <h1>Aniversário de Sofia</h1>
     <p class="subtitle">Prepare o seu melhor look para a festa! ✨</p>
 
     <form id="rsvpForm">
@@ -168,29 +168,52 @@
             acompanhantes: document.getElementById('acompanhantes').value
         };
 
-        try {
-            // Quando subir para a Vercel, mude para: /api/submit
-            const response = await fetch('/api/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dados)
-            });
+       form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById('btnEnviar');
+    const status = document.getElementById('status');
+    
+    btn.disabled = true;
+    btn.innerText = "Enviando...";
+    status.innerText = "Processando seu convite...";
+    status.style.color = "#8e44ad";
 
-            if (response.ok) {
-                status.innerText = "✅ Tudo pronto! Te vemos lá!";
-                status.style.color = "#27ae60";
-                form.reset();
-            } else {
-                throw new Error();
-            }
-        } catch (err) {
-            status.innerText = "❌ Ops! Tente novamente.";
-            status.style.color = "#e74c3c";
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "Enviar Confirmação";
-        }
-    });
+    const dados = {
+        nome: document.getElementById('nome').value,
+        presenca: document.getElementById('presenca').value,
+        acompanhantes: document.getElementById('acompanhantes').value,
+        data: new Date().toLocaleString('pt-BR')
+    };
+
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
+
+    try {
+        // Usamos o modo no-cors para evitar erros de política de segurança do Google
+        await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dados)
+        });
+
+        // Como o 'no-cors' não permite ler a resposta, assumimos sucesso 
+        // se o fetch não disparar um erro de rede (catch)
+        status.innerText = "✅ Tudo pronto! Te vemos lá!";
+        status.style.color = "#27ae60";
+        form.reset();
+
+    } catch (err) {
+        console.error("Erro no envio:", err);
+        status.innerText = "❌ Ops! Tente novamente.";
+        status.style.color = "#e74c3c";
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Enviar Confirmação";
+    }
+});
 </script>
 
 </body>
