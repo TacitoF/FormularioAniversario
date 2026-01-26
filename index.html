@@ -13,7 +13,6 @@
             --white: #ffffff;
         }
 
-        /* Animação de entrada */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -37,7 +36,7 @@
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-position: center;
-            background-size: auto; /* Desktop preserva proporção original */
+            background-size: auto; /* Mantém o layout do computador original */
             
             margin: 0;
             padding: 20px;
@@ -52,14 +51,12 @@
         .card {
             background: rgba(255, 255, 255, 0.82); 
             backdrop-filter: blur(12px); 
-            -webkit-backdrop-filter: blur(12px); /* Suporte para Safari/iOS */
+            -webkit-backdrop-filter: blur(12px);
             width: 100%;
             max-width: 450px;
             padding: 30px 25px;
             border-radius: 28px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-            
-            /* Aplica a animação no card */
             animation: fadeInUp 0.8s ease-out forwards;
         }
 
@@ -131,20 +128,28 @@
             min-height: 24px;
         }
 
-        /* Ajustes Mobile */
+        /* --- NOVOS AJUSTES MOBILE --- */
         @media (max-width: 480px) {
             body {
-                background-size: cover; /* Imagem preenche a tela sem sobrar branco no mobile */
+                /* 'contain' garante que a imagem inteira apareça sem cortes */
+                background-size: contain; 
+                /* Coloca a imagem no topo para não ser coberta pelo teclado do celular */
+                background-position: top center;
                 padding: 15px;
+                /* Remove o attachment:fixed que costuma dar erro de zoom em alguns celulares */
+                background-attachment: scroll;
             }
 
             .card {
                 padding: 25px 20px;
-                background: rgba(255, 255, 255, 0.78); /* Mais visível no fundo do celular */
+                /* Ajustamos a transparência para o fundo não atrapalhar a leitura */
+                background: rgba(255, 255, 255, 0.9);
+                /* Pequena margem no topo para a imagem aparecer melhor */
+                margin-top: 20px;
             }
 
             h1 {
-                font-size: 1.6rem;
+                font-size: 1.5rem;
             }
         }
     </style>
