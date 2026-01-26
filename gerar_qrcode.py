@@ -1,6 +1,6 @@
 import qrcode
 
-link_do_site = "https://youtube.com/shorts/YMcl2fvSvac?feature=shared"
+link_do_site = ""
 
 qr = qrcode.QRCode(
     version=1,
@@ -15,6 +15,6 @@ qr.make(fit=True)
 img = qr.make_image(back_color="white")
 
 # Salva o arquivo na pasta do seu projeto
-img.save("tácitoedani.png")
+img.save("NOMEDOARQUIVO.png")
 
 print("✅ QR Code gerado com sucesso!")
