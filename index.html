@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Presença</title>
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --bg-color: #f0f2f5;
+            --text-color: #2d3436;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box; /* Garante que o padding não quebre o layout */
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #5849c4;
+        }
+
+        #message {
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎉 Aniversário de Sofia</h2>
+    <form id="rsvpForm">
+        <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" placeholder="Ex: João Silva" required>
+        </div>
+
+        <div class="form-group">
+            <label for="presenca">Você irá comparecer?</label>
+            <select id="presenca" name="presenca" required>
+                <option value="">Selecione uma opção</option>
+                <option value="sim">Sim, com certeza!</option>
+                <option value="nao">Infelizmente não poderei</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="acompanhantes">Quantidade de acompanhantes</label>
+            <input type="number" id="acompanhantes" name="acompanhantes" min="0" max="10" value="0">
+        </div>
+
+        <button type="submit" id="btnEnviar">Confirmar Presença</button>
+    </form>
+    <div id="message"></div>
+</div>
+
+<script>
+    const form = document.getElementById('rsvpForm');
+    const messageDiv = document.getElementById('message');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Organiza os dados em um objeto JSON
+        const formData = {
+            nome: document.getElementById('nome').value,
+            presenca: document.getElementById('presenca').value,
+            acompanhantes: document.getElementById('acompanhantes').value,
+            data_envio: new Date().toISOString()
+        };
+
+        // Simulação de envio para banco de dados
+        console.log("Dados prontos para o banco de dados:", formData);
+        
+        // Aqui você futuramente substituirá pelo seu link do n8n ou API:
+        // const response = await fetch('SUA_URL_AQUI', { method: 'POST', body: JSON.stringify(formData) });
+
+        messageDiv.style.display = 'block';
+        messageDiv.innerHTML = "✨ Enviando confirmação...";
+        messageDiv.style.color = "#6c5ce7";
+
+        // Feedback visual de sucesso
+        setTimeout(() => {
+            messageDiv.innerHTML = "✅ Presença confirmada com sucesso!";
+            form.reset();
+        }, 1500);
+    });
+</script>
+
+</body>
+</html>
