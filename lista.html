@@ -33,142 +33,62 @@
             background: var(--card-bg);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            width: 95%;
-            max-width: 500px;
-            height: 85vh;
-            border-radius: 30px;
-            padding: 35px;
+            width: 95%; max-width: 500px; height: 85vh;
+            border-radius: 30px; padding: 35px;
             border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
             box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            position: relative;
         }
 
-        .header-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 5px;
-        }
+        .header-row { display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 5px; }
+        h1 { font-size: 1.4rem; font-weight: 500; margin: 0; letter-spacing: -0.5px; }
 
-        h1 { 
-            font-size: 1.4rem; 
-            font-weight: 500; 
-            margin: 0; 
-            letter-spacing: -0.5px;
-        }
-
-        /* BOTÃO ATUALIZAR DISCRETO */
         .btn-refresh {
-            background: none;
-            border: none;
-            color: var(--text-sub);
-            cursor: pointer;
-            font-size: 1.2rem;
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            transition: transform 0.3s ease, color 0.3s;
+            background: none; border: none; color: var(--text-sub);
+            cursor: pointer; font-size: 1.2rem; transition: transform 0.3s;
         }
-
-        .btn-refresh:hover { color: var(--text-main); }
-        .btn-refresh.spinning { animation: spin 0.8s linear infinite; }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+        .spinning { animation: spin 0.8s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .stats-container {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-sub);
+            display: flex; justify-content: center; gap: 15px;
+            margin: 15px 0 25px 0; font-size: 0.75rem; color: var(--text-sub);
+            text-transform: uppercase; letter-spacing: 1px;
         }
 
-        .stat-item b { color: var(--text-main); }
-
-        .guest-list { 
-            flex-grow: 1; 
-            overflow-y: auto; 
-            padding-right: 5px;
-        }
-
+        .guest-list { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
         .guest-list::-webkit-scrollbar { width: 3px; }
         .guest-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
         .guest-card {
             background: rgba(255, 255, 255, 0.02);
-            margin-bottom: 12px;
-            padding: 20px;
-            border-radius: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 1px solid var(--border);
+            margin-bottom: 12px; padding: 20px;
+            border-radius: 20px; border: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .name-row { font-size: 1rem; font-weight: 500; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-        
         .status-tag {
-            font-size: 0.6rem;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-weight: 700;
-            background: rgba(255,255,255,0.05);
+            font-size: 0.6rem; padding: 2px 8px; border-radius: 6px;
+            font-weight: 700; background: rgba(255,255,255,0.05);
         }
-
         .tag-sim { color: var(--confirmado); border: 1px solid rgba(129, 199, 132, 0.2); }
         .tag-nao { color: var(--ausente); border: 1px solid rgba(229, 115, 115, 0.2); }
 
-        .info-sub { font-size: 0.75rem; color: var(--text-sub); }
-
-        .btn-delete {
-            background: none;
-            border: none;
-            color: var(--text-sub);
-            font-size: 1.1rem;
-            cursor: pointer;
-            padding: 10px;
-            opacity: 0.5;
-            transition: opacity 0.3s;
-        }
-
+        .btn-delete { background: none; border: none; color: var(--text-sub); font-size: 1.1rem; cursor: pointer; opacity: 0.5; }
         .btn-delete:hover { opacity: 1; color: var(--ausente); }
 
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(10px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+            display: none; justify-content: center; align-items: center; z-index: 9999;
         }
-
         .modal {
-            background: #1a1a1a;
-            width: 85%;
-            max-width: 320px;
-            padding: 30px;
-            border-radius: 25px;
-            text-align: center;
-            border: 1px solid var(--border);
+            background: #1a1a1a; width: 85%; max-width: 320px;
+            padding: 30px; border-radius: 25px; text-align: center; border: 1px solid var(--border);
         }
-
-        .modal-btns { display: flex; gap: 10px; margin-top: 25px; }
         .m-btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; }
         .m-confirm { background: var(--ausente); color: white; }
         .m-cancel { background: rgba(255,255,255,0.05); color: white; }
-
-        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -176,23 +96,21 @@
 <div class="container">
     <div class="header-row">
         <h1>Lista de Convidados</h1>
-        <button class="btn-refresh" id="btnRefresh" title="Atualizar Lista" onclick="load()">↻</button>
+        <button class="btn-refresh" id="btnRefresh" onclick="load()">↻</button>
     </div>
-    
-    <div class="stats-container" id="stats">
-        <div class="stat-item">Convites: <b id="countConfirmados">0</b></div>
-        <div class="stat-item">Pessoas: <b id="countTotal">0</b></div>
+    <div class="stats-container">
+        <div>Convites: <b id="countConfirmados" style="color:#fff">0</b></div>
+        <div>Pessoas: <b id="countTotal" style="color:#fff">0</b></div>
     </div>
-    
-    <div id="loading" style="text-align:center; opacity:0.5;">Sincronizando...</div>
+    <div id="loading" style="text-align:center; opacity:0.5; font-size: 0.8rem;">Sincronizando...</div>
     <div class="guest-list" id="lista"></div>
 </div>
 
 <div class="modal-overlay" id="modal">
     <div class="modal">
         <div style="font-weight:500; margin-bottom:10px;">Remover da lista?</div>
-        <div style="font-size:0.85rem; color:var(--text-sub);" id="modalName"></div>
-        <div class="modal-btns">
+        <div style="font-size:0.85rem; color:var(--text-sub); margin-bottom: 20px;" id="modalInfo"></div>
+        <div style="display:flex; gap:10px;">
             <button class="m-btn m-cancel" onclick="closeModal()">Sair</button>
             <button class="m-btn m-confirm" id="confirmDelete">Excluir</button>
         </div>
@@ -201,56 +119,49 @@
 
 <script>
     const URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
-    let targetNome = "";
+    let targetID = "";
 
     async function load() {
-        const refreshBtn = document.getElementById('btnRefresh');
-        const loadingDiv = document.getElementById('loading');
-        
-        // Inicia animação e mostra loading
-        refreshBtn.classList.add('spinning');
-        loadingDiv.classList.remove('hidden');
-
+        const btn = document.getElementById('btnRefresh');
+        btn.classList.add('spinning');
         try {
             const res = await fetch(URL);
             const data = await res.json();
-            
-            loadingDiv.classList.add('hidden');
-            const lista = document.getElementById('lista');
+            document.getElementById('loading').style.display = 'none';
             
             const confirmados = data.filter(g => g.presenca === 'Sim').length;
-            const pessoasTotal = data.reduce((acc, g) => 
-                g.presenca === 'Sim' ? acc + 1 + parseInt(g.acompanhantes || 0) : acc, 0);
+            const total = data.reduce((acc, g) => g.presenca === 'Sim' ? acc + 1 + parseInt(g.acompanhantes || 0) : acc, 0);
 
             document.getElementById('countConfirmados').innerText = confirmados;
-            document.getElementById('countTotal').innerText = pessoasTotal;
+            document.getElementById('countTotal').innerText = total;
 
-            lista.innerHTML = data.map(g => `
+            document.getElementById('lista').innerHTML = data.map(g => `
                 <div class="guest-card">
                     <div>
-                        <div class="name-row">
+                        <div style="font-weight:500; display:flex; align-items:center; gap:8px;">
                             ${g.nome}
                             <span class="status-tag ${g.presenca === 'Sim' ? 'tag-sim' : 'tag-nao'}">
                                 ${g.presenca === 'Sim' ? 'CONFIRMADO' : 'NÃO CONFIRMADO'}
                             </span>
                         </div>
-                        <div class="info-sub">+${g.acompanhantes} acompanhantes</div>
+                        <div style="font-size:0.75rem; color:var(--text-sub);">+${g.acompanhantes} acompanhantes</div>
                     </div>
-                    <button class="btn-delete" onclick="openModal('${g.nome}')">✕</button>
+                    <button class="btn-delete" onclick="openModal('${g.nome}', '${g.id}')">✕</button>
                 </div>
             `).join('');
-        } catch (e) { 
-            console.error(e); 
-            loadingDiv.innerText = "Erro ao carregar.";
-        } finally {
-            // Para animação
-            refreshBtn.classList.remove('spinning');
-        }
+        } catch (e) { console.error(e); }
+        finally { btn.classList.remove('spinning'); }
     }
 
-    function openModal(nome) {
-        targetNome = nome;
-        document.getElementById('modalName').innerText = nome;
+    function openModal(nome, id) {
+        targetID = id;
+        document.getElementById('modalInfo').innerText = nome;
+        
+        // Reseta o estado do botão toda vez que o modal abre
+        const btn = document.getElementById('confirmDelete');
+        btn.innerText = "Excluir";
+        btn.disabled = false;
+        
         document.getElementById('modal').style.display = 'flex';
     }
 
@@ -258,15 +169,26 @@
 
     document.getElementById('confirmDelete').onclick = async () => {
         const btn = document.getElementById('confirmDelete');
-        btn.innerText = "...";
+        btn.innerText = "Excluindo...";
+        btn.disabled = true;
+
         try {
             await fetch(URL, {
                 method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({ action: 'delete', nome: targetNome })
+                body: JSON.stringify({ action: 'delete', id: targetID })
             });
-            location.reload();
-        } catch (e) { alert("Erro"); }
+            
+            // Removemos o alert para uma experiência mais limpa
+            setTimeout(() => {
+                closeModal();
+                load(); // Recarrega os dados da planilha
+            }, 1500);
+        } catch (e) { 
+            console.error(e);
+            alert("Erro ao excluir."); 
+            btn.innerText = "Excluir";
+            btn.disabled = false;
+        }
     };
 
     load();

@@ -79,6 +79,7 @@
         }
 
         button:active { transform: scale(0.98); }
+        button:disabled { background: #ccc; cursor: not-allowed; }
 
         .hidden { display: none !important; }
         
@@ -89,6 +90,8 @@
             margin: 20px 0;
             line-height: 1.4;
         }
+
+        #status { margin-top: 15px; text-align: center; font-weight: 600; }
 
         @media (max-width: 480px) {
             body { background-size: cover; }
@@ -130,7 +133,7 @@
         </div>
     </form>
     
-    <div id="status" style="margin-top: 15px; text-align: center;"></div>
+    <div id="status"></div>
 </div>
 
 <script>
@@ -142,13 +145,11 @@
     const mensagemNegativa = document.getElementById('mensagemNegativa');
     const inputNome = document.getElementById('nome');
 
-    
     selectPresenca.addEventListener('change', function() {
         if (this.value === "Não") {
             camposExtras.classList.add('hidden');
             mensagemNegativa.classList.remove('hidden');
             inputNome.required = false;
-            status.innerText = "";
         } else {
             camposExtras.classList.remove('hidden');
             mensagemNegativa.classList.add('hidden');
@@ -161,12 +162,15 @@
         
         btn.disabled = true;
         btn.innerText = "Enviando...";
+        status.innerText = "Processando...";
+        status.style.color = "#8e44ad";
 
+        // GERAÇÃO DO ID ÚNICO POR MILISSEGUNDOS
         const dados = {
-            nome: inputNome.value,
+            nome: inputNome.value || "Não informado",
             presenca: selectPresenca.value,
             acompanhantes: document.getElementById('acompanhantes').value || 0,
-            data: new Date().toLocaleString('pt-BR')
+            id: Date.now().toString() // Identificador infalível para o Delete
         };
 
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
