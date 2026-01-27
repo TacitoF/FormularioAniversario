@@ -6,18 +6,21 @@
     <title>Lista de Convidados - Sofia 🎂</title>
     <style>
         :root {
-            --primary: #a29bfe;
-            --secondary: #6c5ce7;
-            --text-main: #ffffff;
-            --text-sub: #dfe6e9;
-            --glass: rgba(45, 52, 54, 0.7); /* Vidro escuro para conforto visual */
+            /* Paleta Neutra Escura */
+            --bg-deep: #121212;
+            --card-bg: rgba(30, 30, 30, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-main: #f5f5f5;
+            --text-sub: #a0a0a0;
+            --accent: #ffffff; /* Branco puro para detalhes minimalistas */
         }
 
         * { box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('fundo.jpg') no-repeat center center fixed;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            /* Fundo escurecido para destacar o minimalismo */
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('fundo.jpg') no-repeat center center fixed;
             background-size: cover;
             margin: 0;
             display: flex;
@@ -28,97 +31,108 @@
         }
 
         .container {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: var(--card-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             width: 95%;
-            max-width: 550px;
-            height: 85vh;
-            border-radius: 35px;
-            padding: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 500px;
+            height: 80vh;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
         }
 
         h1 { 
             text-align: center; 
-            font-size: 1.8rem; 
-            margin: 0 0 5px 0;
-            background: linear-gradient(to right, #a29bfe, #fab1a0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.5rem; 
+            font-weight: 500;
+            letter-spacing: -0.5px;
+            margin: 0 0 8px 0;
+            color: var(--text-main);
         }
 
         .stats {
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-sub);
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .guest-list {
             flex-grow: 1;
             overflow-y: auto;
-            padding-right: 10px;
+            padding-right: 8px;
         }
 
-        /* Scrollbar Moderna */
-        .guest-list::-webkit-scrollbar { width: 6px; }
+        /* Scrollbar Minimalista */
+        .guest-list::-webkit-scrollbar { width: 4px; }
         .guest-list::-webkit-scrollbar-thumb { 
-            background: var(--primary); 
+            background: rgba(255, 255, 255, 0.2); 
             border-radius: 10px; 
         }
 
         .guest-card {
-            background: rgba(255, 255, 255, 0.05);
-            margin-bottom: 15px;
-            padding: 18px;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 12px;
+            padding: 20px;
+            border-radius: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            transition: background 0.3s ease;
         }
 
         .guest-card:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.06);
         }
 
-        .guest-info h3 { margin: 0; font-size: 1.1rem; color: var(--text-main); }
-        .guest-info p { margin: 4px 0 0; font-size: 0.85rem; color: var(--text-sub); }
-
-        .status-badge {
-            padding: 6px 14px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
+        .guest-info h3 { 
+            margin: 0; 
+            font-size: 1rem; 
+            font-weight: 500;
+            color: var(--text-main); 
+        }
+        
+        .guest-info p { 
+            margin: 4px 0 0; 
+            font-size: 0.8rem; 
+            color: var(--text-sub); 
         }
 
-        .status-sim { background: rgba(0, 184, 148, 0.2); color: #55efc4; }
-        .status-nao { background: rgba(214, 48, 49, 0.2); color: #ff7675; }
+        .status-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
 
-        #loading { text-align: center; padding: 20px; }
+        .status-sim { color: #ffffff; opacity: 0.9; }
+        .status-nao { color: #ff5252; opacity: 0.8; }
+
+        #loading { 
+            text-align: center; 
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Convidados da Sofia ✨</h1>
-    <div class="stats" id="counter">Carregando estatísticas...</div>
+    <h1>Convidados</h1>
+    <div class="stats" id="counter">Sincronizando...</div>
     
-    <div id="loading">Preparando a festa... 🎈</div>
+    <div id="loading">Carregando dados da nuvem...</div>
     
-    <div class="guest-list" id="lista">
-        </div>
+    <div class="guest-list" id="lista"></div>
 </div>
 
 <script>
-    // Use a URL do App da Web (terminada em /exec)
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
 
     async function carregarConvidados() {
@@ -130,26 +144,25 @@
             const counter = document.getElementById('counter');
             document.getElementById('loading').style.display = 'none';
 
-            // Cálculos para o dashboard
             const confirmados = dados.filter(g => g.presenca === 'Sim').length;
             const totalPessoas = dados.reduce((acc, curr) => 
                 curr.presenca === 'Sim' ? acc + 1 + parseInt(curr.acompanhantes) : acc, 0);
 
-            counter.innerHTML = `<b>${confirmados}</b> confirmados • <b>${totalPessoas}</b> pessoas no total`;
+            counter.innerHTML = `${confirmados} confirmados • ${totalPessoas} total`;
 
             lista.innerHTML = dados.map(g => `
                 <div class="guest-card">
                     <div class="guest-info">
                         <h3>${g.nome}</h3>
-                        <p>${g.acompanhantes > 0 ? `+${g.acompanhantes} acompanhante(s)` : 'Sem acompanhantes'}</p>
+                        <p>${g.acompanhantes > 0 ? `+${g.acompanhantes} convidado(s)` : 'Apenas individual'}</p>
                     </div>
-                    <span class="status-badge ${g.presenca === 'Sim' ? 'status-sim' : 'status-nao'}">
-                        ${g.presenca}
+                    <span class="status-text ${g.presenca === 'Sim' ? 'status-sim' : 'status-nao'}">
+                        ${g.presenca === 'Sim' ? 'CONFIRMADO' : 'AUSENTE'}
                     </span>
                 </div>
             `).join('');
         } catch (err) {
-            document.getElementById('loading').innerText = "Erro ao carregar os dados. Verifique a URL do Script.";
+            document.getElementById('loading').innerText = "Erro na conexão.";
         }
     }
 
