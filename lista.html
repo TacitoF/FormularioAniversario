@@ -6,21 +6,20 @@
     <title>Lista de Convidados - Sofia 🎂</title>
     <style>
         :root {
-            /* Paleta Neutra Escura */
             --bg-deep: #121212;
-            --card-bg: rgba(30, 30, 30, 0.6);
-            --border-color: rgba(255, 255, 255, 0.08);
+            --card-bg: rgba(30, 30, 30, 0.75);
+            --border: rgba(255, 255, 255, 0.08);
             --text-main: #f5f5f5;
             --text-sub: #a0a0a0;
-            --accent: #ffffff; /* Branco puro para detalhes minimalistas */
+            --confirmado: #81c784; 
+            --ausente: #e57373;    
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            /* Fundo escurecido para destacar o minimalismo */
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('fundo.jpg') no-repeat center center fixed;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('fundo.jpg') no-repeat center center fixed;
             background-size: cover;
             margin: 0;
             display: flex;
@@ -36,137 +35,241 @@
             -webkit-backdrop-filter: blur(25px);
             width: 95%;
             max-width: 500px;
-            height: 80vh;
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.6);
-            border: 1px solid var(--border-color);
+            height: 85vh;
+            border-radius: 30px;
+            padding: 35px;
+            border: 1px solid var(--border);
             display: flex;
             flex-direction: column;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
         }
 
         h1 { 
-            text-align: center; 
-            font-size: 1.5rem; 
-            font-weight: 500;
+            font-size: 1.4rem; 
+            font-weight: 500; 
+            margin: 0; 
             letter-spacing: -0.5px;
-            margin: 0 0 8px 0;
-            color: var(--text-main);
         }
 
-        .stats {
-            text-align: center;
-            font-size: 0.85rem;
+        /* BOTÃO ATUALIZAR DISCRETO */
+        .btn-refresh {
+            background: none;
+            border: none;
             color: var(--text-sub);
-            margin-bottom: 30px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease, color 0.3s;
+        }
+
+        .btn-refresh:hover { color: var(--text-main); }
+        .btn-refresh.spinning { animation: spin 0.8s linear infinite; }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: var(--text-sub);
         }
 
-        .guest-list {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-right: 8px;
+        .stat-item b { color: var(--text-main); }
+
+        .guest-list { 
+            flex-grow: 1; 
+            overflow-y: auto; 
+            padding-right: 5px;
         }
 
-        /* Scrollbar Minimalista */
-        .guest-list::-webkit-scrollbar { width: 4px; }
-        .guest-list::-webkit-scrollbar-thumb { 
-            background: rgba(255, 255, 255, 0.2); 
-            border-radius: 10px; 
-        }
+        .guest-list::-webkit-scrollbar { width: 3px; }
+        .guest-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 
         .guest-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
             margin-bottom: 12px;
             padding: 20px;
-            border-radius: 16px;
+            border-radius: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid var(--border-color);
-            transition: background 0.3s ease;
+            border: 1px solid var(--border);
         }
 
-        .guest-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-        }
-
-        .guest-info h3 { 
-            margin: 0; 
-            font-size: 1rem; 
-            font-weight: 500;
-            color: var(--text-main); 
-        }
+        .name-row { font-size: 1rem; font-weight: 500; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
         
-        .guest-info p { 
-            margin: 4px 0 0; 
-            font-size: 0.8rem; 
-            color: var(--text-sub); 
+        .status-tag {
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            background: rgba(255,255,255,0.05);
         }
 
-        .status-text {
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
+        .tag-sim { color: var(--confirmado); border: 1px solid rgba(129, 199, 132, 0.2); }
+        .tag-nao { color: var(--ausente); border: 1px solid rgba(229, 115, 115, 0.2); }
 
-        .status-sim { color: #ffffff; opacity: 0.9; }
-        .status-nao { color: #ff5252; opacity: 0.8; }
+        .info-sub { font-size: 0.75rem; color: var(--text-sub); }
 
-        #loading { 
-            text-align: center; 
-            font-size: 0.9rem;
+        .btn-delete {
+            background: none;
+            border: none;
             color: var(--text-sub);
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 10px;
+            opacity: 0.5;
+            transition: opacity 0.3s;
         }
+
+        .btn-delete:hover { opacity: 1; color: var(--ausente); }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal {
+            background: #1a1a1a;
+            width: 85%;
+            max-width: 320px;
+            padding: 30px;
+            border-radius: 25px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .modal-btns { display: flex; gap: 10px; margin-top: 25px; }
+        .m-btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; }
+        .m-confirm { background: var(--ausente); color: white; }
+        .m-cancel { background: rgba(255,255,255,0.05); color: white; }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Convidados</h1>
-    <div class="stats" id="counter">Sincronizando...</div>
+    <div class="header-row">
+        <h1>Lista de Convidados</h1>
+        <button class="btn-refresh" id="btnRefresh" title="Atualizar Lista" onclick="load()">↻</button>
+    </div>
     
-    <div id="loading">Carregando dados da nuvem...</div>
+    <div class="stats-container" id="stats">
+        <div class="stat-item">Convites: <b id="countConfirmados">0</b></div>
+        <div class="stat-item">Pessoas: <b id="countTotal">0</b></div>
+    </div>
     
+    <div id="loading" style="text-align:center; opacity:0.5;">Sincronizando...</div>
     <div class="guest-list" id="lista"></div>
 </div>
 
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <div style="font-weight:500; margin-bottom:10px;">Remover da lista?</div>
+        <div style="font-size:0.85rem; color:var(--text-sub);" id="modalName"></div>
+        <div class="modal-btns">
+            <button class="m-btn m-cancel" onclick="closeModal()">Sair</button>
+            <button class="m-btn m-confirm" id="confirmDelete">Excluir</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
+    const URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
+    let targetNome = "";
 
-    async function carregarConvidados() {
+    async function load() {
+        const refreshBtn = document.getElementById('btnRefresh');
+        const loadingDiv = document.getElementById('loading');
+        
+        // Inicia animação e mostra loading
+        refreshBtn.classList.add('spinning');
+        loadingDiv.classList.remove('hidden');
+
         try {
-            const response = await fetch(APPS_SCRIPT_URL);
-            const dados = await response.json();
+            const res = await fetch(URL);
+            const data = await res.json();
             
+            loadingDiv.classList.add('hidden');
             const lista = document.getElementById('lista');
-            const counter = document.getElementById('counter');
-            document.getElementById('loading').style.display = 'none';
+            
+            const confirmados = data.filter(g => g.presenca === 'Sim').length;
+            const pessoasTotal = data.reduce((acc, g) => 
+                g.presenca === 'Sim' ? acc + 1 + parseInt(g.acompanhantes || 0) : acc, 0);
 
-            const confirmados = dados.filter(g => g.presenca === 'Sim').length;
-            const totalPessoas = dados.reduce((acc, curr) => 
-                curr.presenca === 'Sim' ? acc + 1 + parseInt(curr.acompanhantes) : acc, 0);
+            document.getElementById('countConfirmados').innerText = confirmados;
+            document.getElementById('countTotal').innerText = pessoasTotal;
 
-            counter.innerHTML = `${confirmados} confirmados • ${totalPessoas} total`;
-
-            lista.innerHTML = dados.map(g => `
+            lista.innerHTML = data.map(g => `
                 <div class="guest-card">
-                    <div class="guest-info">
-                        <h3>${g.nome}</h3>
-                        <p>${g.acompanhantes > 0 ? `+${g.acompanhantes} convidado(s)` : 'Apenas individual'}</p>
+                    <div>
+                        <div class="name-row">
+                            ${g.nome}
+                            <span class="status-tag ${g.presenca === 'Sim' ? 'tag-sim' : 'tag-nao'}">
+                                ${g.presenca === 'Sim' ? 'CONFIRMADO' : 'NÃO CONFIRMADO'}
+                            </span>
+                        </div>
+                        <div class="info-sub">+${g.acompanhantes} acompanhantes</div>
                     </div>
-                    <span class="status-text ${g.presenca === 'Sim' ? 'status-sim' : 'status-nao'}">
-                        ${g.presenca === 'Sim' ? 'CONFIRMADO' : 'AUSENTE'}
-                    </span>
+                    <button class="btn-delete" onclick="openModal('${g.nome}')">✕</button>
                 </div>
             `).join('');
-        } catch (err) {
-            document.getElementById('loading').innerText = "Erro na conexão.";
+        } catch (e) { 
+            console.error(e); 
+            loadingDiv.innerText = "Erro ao carregar.";
+        } finally {
+            // Para animação
+            refreshBtn.classList.remove('spinning');
         }
     }
 
-    carregarConvidados();
+    function openModal(nome) {
+        targetNome = nome;
+        document.getElementById('modalName').innerText = nome;
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+    document.getElementById('confirmDelete').onclick = async () => {
+        const btn = document.getElementById('confirmDelete');
+        btn.innerText = "...";
+        try {
+            await fetch(URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({ action: 'delete', nome: targetNome })
+            });
+            location.reload();
+        } catch (e) { alert("Erro"); }
+    };
+
+    load();
 </script>
 </body>
 </html>
