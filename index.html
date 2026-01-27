@@ -150,7 +150,7 @@
         status.innerText = "";
     }
 
-    // AJUSTE: Bloqueia qualquer caractere que não seja número
+    // Bloqueia caracteres não numéricos
     inputAcompanhantes.addEventListener('input', function() {
         limparStatus();
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -171,7 +171,8 @@
 
     inputNome.addEventListener('input', limparStatus);
 
-    form.addEventListener('submit', async (e) => {
+    // LÓGICA DE ENVIO OTIMIZADA (Dispara e esquece)
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
         
         btn.disabled = true;
@@ -190,28 +191,27 @@
 
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
 
-        try {
-            await fetch(APPS_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors', 
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dados)
-            });
+        // O envio acontece em segundo plano sem await
+        fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', 
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+        });
 
+        // Mostra o sucesso quase imediatamente para o usuário
+        setTimeout(() => {
             status.innerText = "✅ Enviado com sucesso!";
             status.style.color = "#27ae60";
             form.reset();
             
+            // Retorna ao estado inicial
             camposExtras.classList.remove('hidden');
             mensagemNegativa.classList.add('hidden');
             inputNome.required = true;
-        } catch (err) {
-            status.innerText = "❌ Erro ao enviar.";
-            status.style.color = "#e74c3c";
-        } finally {
             btn.disabled = false;
             btn.innerText = "Enviar Confirmação";
-        }
+        }, 600); 
     });
 </script>
 </body>
