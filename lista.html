@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Convidados - Sofia 🎂</title>
+    <style>
+        :root {
+            --primary: #8e44ad;
+            --bg: #f3e5f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: url('fundo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            width: 90%;
+            max-width: 500px;
+            height: 80vh;
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 { color: var(--primary); text-align: center; font-size: 1.5rem; }
+
+        /* Lista Rolável Estilizada */
+        .guest-list {
+            flex-grow: 1;
+            overflow-y: auto; /* Aqui entra a rolagem */
+            padding-right: 10px;
+            margin-top: 15px;
+        }
+
+        /* Customizando a barra de rolagem */
+        .guest-list::-webkit-scrollbar { width: 6px; }
+        .guest-list::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        .guest-card {
+            background: white;
+            margin-bottom: 12px;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid var(--primary);
+            transition: transform 0.2s;
+        }
+
+        .guest-card:hover { transform: scale(1.02); }
+
+        .status-sim { color: #27ae60; font-weight: bold; }
+        .status-nao { color: #e74c3c; font-weight: bold; }
+
+        .guest-info h3 { margin: 0; font-size: 1rem; color: #2f3640; }
+        .guest-info p { margin: 2px 0 0; font-size: 0.8rem; color: #636e72; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Convidados da Sofia ✨</h1>
+    <div id="loading" style="text-align: center;">Carregando lista...</div>
+    <div class="guest-list" id="lista">
+        </div>
+</div>
+
+<script>
+    const APPS_SCRIPT_URL = 'SUA_URL_DO_GET';
+
+    async function carregarConvidados() {
+        try {
+            const response = await fetch(APPS_SCRIPT_URL);
+            const dados = await response.json();
+            const lista = document.getElementById('lista');
+            document.getElementById('loading').style.display = 'none';
+
+            lista.innerHTML = dados.map(convidado => `
+                <div class="guest-card">
+                    <div class="guest-info">
+                        <h3>${convidado.nome}</h3>
+                        <p>${convidado.acompanhantes} acompanhante(s)</p>
+                    </div>
+                    <span class="${convidado.presenca === 'Sim' ? 'status-sim' : 'status-nao'}">
+                        ${convidado.presenca}
+                    </span>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    carregarConvidados();
+</script>
+</body>
+</html>
