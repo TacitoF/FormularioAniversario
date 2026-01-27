@@ -91,7 +91,7 @@
             line-height: 1.4;
         }
 
-        #status { margin-top: 15px; text-align: center; font-weight: 600; }
+        #status { margin-top: 15px; text-align: center; font-weight: 600; min-height: 24px; }
 
         @media (max-width: 480px) {
             body { background-size: cover; }
@@ -126,7 +126,7 @@
 
             <div class="form-group">
                 <label for="acompanhantes">Quantos acompanhantes?</label>
-                <input type="number" id="acompanhantes" value="0" min="0" max="10">
+                <input type="number" id="acompanhantes" placeholder="0" min="0" max="10" inputmode="numeric" pattern="[0-9]*">
             </div>
 
             <button type="submit" id="btnEnviar">Enviar Confirmação</button>
@@ -144,8 +144,20 @@
     const camposExtras = document.getElementById('camposExtras');
     const mensagemNegativa = document.getElementById('mensagemNegativa');
     const inputNome = document.getElementById('nome');
+    const inputAcompanhantes = document.getElementById('acompanhantes');
+
+    function limparStatus() {
+        status.innerText = "";
+    }
+
+    // AJUSTE: Bloqueia qualquer caractere que não seja número
+    inputAcompanhantes.addEventListener('input', function() {
+        limparStatus();
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
 
     selectPresenca.addEventListener('change', function() {
+        limparStatus();
         if (this.value === "Não") {
             camposExtras.classList.add('hidden');
             mensagemNegativa.classList.remove('hidden');
@@ -157,6 +169,8 @@
         }
     });
 
+    inputNome.addEventListener('input', limparStatus);
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -165,12 +179,13 @@
         status.innerText = "Processando...";
         status.style.color = "#8e44ad";
 
-        // GERAÇÃO DO ID ÚNICO POR MILISSEGUNDOS
+        const acompanhantesValor = inputAcompanhantes.value === "" ? 0 : inputAcompanhantes.value;
+
         const dados = {
             nome: inputNome.value || "Não informado",
             presenca: selectPresenca.value,
-            acompanhantes: document.getElementById('acompanhantes').value || 0,
-            id: Date.now().toString() // Identificador infalível para o Delete
+            acompanhantes: acompanhantesValor,
+            id: Date.now().toString()
         };
 
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
@@ -186,8 +201,10 @@
             status.innerText = "✅ Enviado com sucesso!";
             status.style.color = "#27ae60";
             form.reset();
+            
             camposExtras.classList.remove('hidden');
             mensagemNegativa.classList.add('hidden');
+            inputNome.required = true;
         } catch (err) {
             status.innerText = "❌ Erro ao enviar.";
             status.style.color = "#e74c3c";
