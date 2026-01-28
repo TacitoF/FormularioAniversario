@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Presença Confirmada! 🎂</title>
+    <style>
+        :root {
+            --primary: #8e44ad;
+            --bg: #f3e5f5;
+            --text: #2f3640;
+            --white: #ffffff;
+            --google: #4285F4;
+            --waze: #33CCFF;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            background-image: url('fundo2.png');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            width: 100%;
+            max-width: 450px;
+            padding: 35px 25px;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .check-icon { font-size: 50px; color: #27ae60; margin-bottom: 10px; }
+        h1 { color: var(--primary); margin: 0; font-size: 1.8rem; }
+        p.thanks { margin-bottom: 30px; font-weight: 500; opacity: 0.8; }
+
+        .info-box {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            border: 1px solid rgba(142, 68, 173, 0.1);
+        }
+
+        .info-item { display: flex; align-items: center; margin-bottom: 15px; }
+        .icon { font-size: 1.4rem; margin-right: 15px; width: 30px; text-align: center; }
+        .label { font-weight: bold; display: block; font-size: 0.8rem; color: var(--primary); text-transform: uppercase; }
+        .value { font-size: 1rem; color: var(--text); }
+
+        /* Botões de GPS */
+        .gps-container { display: flex; gap: 10px; margin-top: 15px; }
+
+        .btn-gps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            color: white;
+            padding: 14px 5px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: transform 0.2s;
+        }
+
+        .google-maps { background-color: var(--google); }
+        .waze { background-color: var(--waze); color: #1e272e; }
+
+        .btn-gps:active { transform: scale(0.95); }
+
+        /* FAQ / Mimos */
+        .faq-section { margin-top: 30px; text-align: left; }
+        .faq-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .faq-card { background: rgba(142, 68, 173, 0.05); padding: 18px; border-radius: 18px; border-left: 5px solid var(--primary); }
+        .faq-item { margin-bottom: 8px; font-size: 0.95rem; }
+        .faq-item b { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="check-icon">✓</div>
+    <h1>Presença Confirmada!</h1>
+    <p class="thanks">Mal podemos esperar para celebrar com você.</p>
+
+    <div class="info-box">
+        <div class="info-item">
+            <span class="icon">📅</span>
+            <div>
+                <span class="label">Data</span>
+                <span class="value">04 de Fevereiro de 2026</span>
+            </div>
+        </div>
+        <div class="info-item">
+            <span class="icon">⏰</span>
+            <div>
+                <span class="label">Horário</span>
+                <span class="value">A partir das 18:00h</span>
+            </div>
+        </div>
+        <div class="info-item">
+            <span class="icon">📍</span>
+            <div>
+                <span class="label">Local</span>
+                <span class="value">Buffet Magic Festas<br>Rua Exemplo do Local, 123</span>
+            </div>
+        </div>
+
+        <div class="gps-container">
+            <a href="https://www.google.com/maps/dir/?api=1&destination=Buffet+Magic+Festas+Endereço+Aqui" target="_blank" class="btn-gps google-maps">
+                Google Maps
+            </a>
+            <a href="https://waze.com/ul?q=Buffet+Magic+Festas+Endereço+Aqui&navigate=yes" target="_blank" class="btn-gps waze">
+                Waze
+            </a>
+        </div>
+    </div>
+
+    <div class="faq-section">
+        <div class="faq-title"><span>🎁</span> Dicas de Mimos</div>
+        <div class="faq-card">
+            <div class="faq-item">👗 <b>Roupas:</b> Tamanho 8 anos</div>
+            <div class="faq-item">👟 <b>Calçados:</b> Tamanho 14</div>
+            <div class="faq-item">🧸 <b>Dica:</b> A Sofia ama ursinhos e a cor lilás!</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

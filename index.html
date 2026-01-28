@@ -254,9 +254,12 @@
             status.style.color = "#27ae60";
             form.reset();
             camposExtras.classList.add('hidden');
-            grupoEmail.classList.add('hidden'); // Esconde o e-mail após reset
+            grupoEmail.classList.add('hidden');
             btn.disabled = false;
             btn.innerText = "Enviar Confirmação";
+            setTimeout(() => {
+                window.location.href = "confirmado.html";
+            }, 1200);
         }, 800); 
     });
 </script>
