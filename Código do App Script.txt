@@ -1,0 +1,145 @@
+function doPost(e) {
+  var requestData = JSON.parse(e.postData.contents);
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+
+  // --- LÓGICA DE REMOÇÃO ---
+  if (requestData.action === 'delete') {
+    var rows = sheet.getDataRange().getValues();
+    var idAlvo = String(requestData.id).trim(); 
+    for (var i = rows.length - 1; i >= 1; i--) {
+      if (String(rows[i][3]).trim() === idAlvo) {
+        sheet.deleteRow(i + 1);
+        return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
+      }
+    }
+    return ContentService.createTextOutput("Erro").setMimeType(ContentService.MimeType.TEXT);
+  }
+
+  // --- LÓGICA DE ADIÇÃO ---
+  sheet.appendRow([
+    requestData.nome, 
+    requestData.presenca, 
+    requestData.acompanhantes, 
+    "'" + requestData.id,
+    requestData.email,
+    requestData.lembrete
+  ]);
+
+  // Força o salvamento imediato para garantir que a lista no e-mail saia atualizada
+  SpreadsheetApp.flush();
+
+  // --- TAREFAS DE BACKGROUND (E-mail de Notificação) ---
+  try {
+    var data = sheet.getDataRange().getValues();
+    var confirmados = data.filter(function(row, index) {
+      return index > 0 && row[1] === 'Sim';
+    });
+
+    var totalPessoas = confirmados.reduce(function(acc, row) {
+      return acc + 1 + parseInt(row[2] || 0);
+    }, 0);
+
+    var htmlBody = "<div style='font-family: sans-serif; color: #444; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 25px; border-radius: 20px;'>";
+    htmlBody += "<div style='text-align: center; margin-bottom: 30px;'>";
+    htmlBody += "<h1 style='color: #8e44ad; margin: 0; font-size: 1.6em;'>✨ " + requestData.nome + " confirmou a presença!</h1>";
+    htmlBody += "</div>";
+    
+    // Painel de Resumo
+    htmlBody += "<table style='width: 100%; background: #f9f4ff; border-radius: 15px; border-spacing: 0; margin-bottom: 30px;'><tr>";
+    htmlBody += "<td style='width: 50%; text-align: center; padding: 20px; border-right: 1px solid #e0d0f0;'><span style='font-size: 0.85em; color: #8e44ad; text-transform: uppercase; font-weight: bold;'>Convites</span><br><strong style='font-size: 2.2em; color: #333;'>" + confirmados.length + "</strong></td>";
+    htmlBody += "<td style='width: 50%; text-align: center; padding: 20px;'><span style='font-size: 0.85em; color: #8e44ad; text-transform: uppercase; font-weight: bold;'>Total de Pessoas</span><br><strong style='font-size: 2.2em; color: #333;'>" + totalPessoas + "</strong></td>";
+    htmlBody += "</tr></table>";
+
+    // --- REINSERÇÃO DA TABELA DE CONVIDADOS NO EMAIL ---
+    htmlBody += "<h3 style='color: #8e44ad; font-size: 1em; margin-bottom: 15px;'>LISTA ATUALIZADA:</h3>";
+    htmlBody += "<table style='border-collapse: collapse; width: 100%;'>";
+    htmlBody += "<thead><tr style='border-bottom: 2px solid #f3e5f5; color: #8e44ad;'>";
+    htmlBody += "<th style='padding: 12px; text-align: left; font-size: 0.9em;'>CONVIDADO</th>";
+    htmlBody += "<th style='padding: 12px; text-align: right; font-size: 0.9em;'>ACOMPANHANTES</th>";
+    htmlBody += "</tr></thead><tbody>";
+
+    for (var i = 0; i < confirmados.length; i++) {
+      htmlBody += "<tr style='border-bottom: 1px solid #f9f9f9;'>";
+      htmlBody += "<td style='padding: 14px 12px; font-weight: 500; color: #333;'>" + confirmados[i][0] + "</td>";
+      htmlBody += "<td style='padding: 14px 12px; text-align: right; color: #777;'>+" + confirmados[i][2] + "</td>";
+      htmlBody += "</tr>";
+    }
+    htmlBody += "</tbody></table>";
+
+    htmlBody += "<div style='text-align: center; margin-top: 35px;'><a href='https://sofiafaz5.vercel.app/lista.html' style='background-color: #8e44ad; color: white; padding: 15px 25px; text-decoration: none; border-radius: 12px; font-weight: bold; display: inline-block;'>Acessar Painel Online</a></div>";
+    htmlBody += "</div>";
+
+    MailApp.sendEmail({
+      to: "tacito1.filho@gmail.com, ursula.bastos78@gmail.com", 
+      subject: "✅ Nova Confirmação: " + requestData.nome,
+      htmlBody: htmlBody,
+      name: "Sistema Sofia 🎂"
+    });
+  } catch (err) {
+    console.log("Erro no e-mail de notificação: " + err);
+  }
+
+  return ContentService.createTextOutput("Sucesso").setMimeType(ContentService.MimeType.TEXT);
+}
+
+function doGet() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  var result = [];
+
+  for (var i = 1; i < data.length; i++) {
+    result.push({
+      nome: data[i][0],
+      presenca: data[i][1],
+      acompanhantes: data[i][2],
+      id: data[i][3],
+      email: data[i][4],
+      lembrete: data[i][5] === true || data[i][5] === "TRUE"
+    });
+  }
+  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function enviarLembreteUmaSemana() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  var corPrincipal = "#8e44ad";
+  var corFundo = "#f9f4ff";
+
+  for (var i = 1; i < data.length; i++) {
+    var nome = data[i][0];
+    var presenca = data[i][1];
+    var emailConvidado = data[i][4];
+    var querLembrete = data[i][5];
+
+    if (presenca === "Sim" && emailConvidado && (querLembrete === true || querLembrete === "TRUE")) {
+      var htmlBody = `
+        <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; border-radius: 20px; overflow: hidden;">
+          <div style="background-color: ${corPrincipal}; padding: 30px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">Falta apenas 1 semana! 🎂</h1>
+          </div>
+          <div style="padding: 30px; background-color: white; text-align: center;">
+            <p style="font-size: 18px;">Olá, <strong>${nome}</strong>!</p>
+            <p style="color: #666; line-height: 1.6;">Estamos passando para lembrar que o <strong>Aniversário de Sofia</strong> está chegando!</p>
+            <div style="background-color: ${corFundo}; padding: 20px; border-radius: 15px; margin: 25px 0; border: 1px dashed ${corPrincipal};">
+                <p style="margin: 5px 0;">📍 <strong>Local:</strong> Buffet Magic Festas</p>
+                <p style="margin: 5px 0;">⏰ <strong>Horário:</strong> 18:00h</p>
+                <p style="margin: 5px 0;">📅 <strong>Data:</strong> 04 de Fevereiro</p>
+            </div>
+            <p style="color: #666; font-size: 14px;">Mal podemos esperar para comemorar juntos!</p>
+          </div>
+        </div>`;
+
+      try {
+        MailApp.sendEmail({
+          to: emailConvidado,
+          subject: "Falta 1 semana! 🎂 Aniversário de Sofia",
+          htmlBody: htmlBody,
+          name: "Família de Sofia 🎂"
+        });
+      } catch (e) {
+        Logger.log("Erro ao enviar para " + emailConvidado + ": " + e);
+      }
+    }
+  }
+}
