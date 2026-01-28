@@ -13,6 +13,7 @@
             --text-sub: #a0a0a0;
             --confirmado: #81c784; 
             --ausente: #e57373;    
+            --primary: #8e44ad;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -74,6 +75,11 @@
         }
         .tag-sim { color: var(--confirmado); border: 1px solid rgba(129, 199, 132, 0.2); }
         .tag-nao { color: var(--ausente); border: 1px solid rgba(229, 115, 115, 0.2); }
+
+        /* Estilo para o ícone de lembrete */
+        .bell-icon { font-size: 0.9rem; margin-left: 5px; }
+        .bell-active { color: #f1c40f; filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3)); }
+        .bell-inactive { color: rgba(255,255,255,0.1); }
 
         .btn-delete { background: none; border: none; color: var(--text-sub); font-size: 1.1rem; cursor: pointer; opacity: 0.5; }
         .btn-delete:hover { opacity: 1; color: var(--ausente); }
@@ -144,6 +150,9 @@
                             <span class="status-tag ${g.presenca === 'Sim' ? 'tag-sim' : 'tag-nao'}">
                                 ${g.presenca === 'Sim' ? 'CONFIRMADO' : 'NÃO CONFIRMADO'}
                             </span>
+                            <span class="bell-icon ${g.lembrete ? 'bell-active' : 'bell-inactive'}" title="${g.lembrete ? 'Lembrete ativo' : 'Sem lembrete'}">
+                                🔔
+                            </span>
                         </div>
                         <div class="acompanhantes-label" style="font-size:0.75rem; color:var(--text-sub);">+${g.acompanhantes} acompanhantes</div>
                     </div>
@@ -165,7 +174,6 @@
 
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
-    // LÓGICA DE EXCLUSÃO OTIMISTA COM ATUALIZAÇÃO DE CONTADORES
     document.getElementById('confirmDelete').onclick = () => {
         const btn = document.getElementById('confirmDelete');
         const idParaRemover = targetID;
@@ -173,7 +181,6 @@
         btn.innerText = "Removendo...";
         btn.disabled = true;
 
-        // Dispara para o Google sem esperar
         fetch(URL, {
             method: 'POST',
             body: JSON.stringify({ action: 'delete', id: idParaRemover })
@@ -184,27 +191,22 @@
             const card = document.querySelector(`[data-id="${idParaRemover}"]`);
             
             if (card) {
-                // Seleciona os elementos de contagem
                 const countConvidadosEl = document.getElementById('countConfirmados');
                 const countTotalEl = document.getElementById('countTotal');
 
-                // Verifica acompanhantes e status de confirmação
                 const acompanhantesText = card.querySelector('.acompanhantes-label').innerText;
                 const acompanhantesQtd = parseInt(acompanhantesText.replace(/[^0-9]/g, '')) || 0;
                 const isConfirmado = card.querySelector('.tag-sim') !== null;
 
-                // Se o removido era um confirmado, atualiza os totais no topo
                 if (isConfirmado) {
                     countConvidadosEl.innerText = Math.max(0, parseInt(countConvidadosEl.innerText) - 1);
                     countTotalEl.innerText = Math.max(0, parseInt(countTotalEl.innerText) - (1 + acompanhantesQtd));
                 }
 
-                // Remove visualmente com efeito
                 card.style.opacity = '0';
                 card.style.transform = 'translateX(20px)';
                 setTimeout(() => {
                     card.remove();
-                    // Sincroniza com a planilha em 5s para garantir precisão
                     setTimeout(load, 5000);
                 }, 400);
             }

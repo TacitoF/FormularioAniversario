@@ -64,6 +64,48 @@
             background: rgba(255, 255, 255, 0.9);
         }
 
+        /* Estilo do Switch (Lembrete) */
+        .switch-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(142, 68, 173, 0.05);
+            padding: 15px;
+            border-radius: 14px;
+            margin: 10px 0 18px 0;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
         button {
             width: 100%;
             height: 55px;
@@ -82,20 +124,8 @@
         button:disabled { background: #ccc; cursor: not-allowed; }
 
         .hidden { display: none !important; }
-        
-        #mensagemNegativa {
-            color: var(--primary);
-            text-align: center;
-            font-weight: bold;
-            margin: 20px 0;
-            line-height: 1.4;
-        }
-
         #status { margin-top: 15px; text-align: center; font-weight: 600; min-height: 24px; }
 
-        @media (max-width: 480px) {
-            body { background-size: cover; }
-        }
     </style>
 </head>
 <body>
@@ -118,7 +148,7 @@
             Sinto muito que não poderá vir, mas tudo bem! Obrigado pelo carinho. ❤️
         </div>
 
-        <div id="camposExtras">
+        <div id="camposExtras" class="hidden">
             <div class="form-group">
                 <label for="nome">Qual o seu nome?</label>
                 <input type="text" id="nome" placeholder="Seu nome completo">
@@ -126,7 +156,20 @@
 
             <div class="form-group">
                 <label for="acompanhantes">Quantos acompanhantes?</label>
-                <input type="number" id="acompanhantes" placeholder="0" min="0" max="10" inputmode="numeric" pattern="[0-9]*">
+                <input type="number" id="acompanhantes" placeholder="0" min="0" max="10" inputmode="numeric">
+            </div>
+
+            <div class="switch-group">
+                <span style="font-size: 0.9rem; color: var(--text); font-weight: 600;">Me lembre 1 semana antes 🔔</span>
+                <label class="switch">
+                    <input type="checkbox" id="lembrete">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div id="grupoEmail" class="form-group hidden">
+                <label for="email">Seu E-mail</label>
+                <input type="email" id="email" placeholder="Para receber o lembrete">
             </div>
 
             <button type="submit" id="btnEnviar">Enviar Confirmação</button>
@@ -144,13 +187,13 @@
     const camposExtras = document.getElementById('camposExtras');
     const mensagemNegativa = document.getElementById('mensagemNegativa');
     const inputNome = document.getElementById('nome');
+    const inputEmail = document.getElementById('email');
+    const grupoEmail = document.getElementById('grupoEmail');
     const inputAcompanhantes = document.getElementById('acompanhantes');
+    const checkLembrete = document.getElementById('lembrete');
 
-    function limparStatus() {
-        status.innerText = "";
-    }
+    function limparStatus() { status.innerText = ""; }
 
-    // Bloqueia caracteres não numéricos
     inputAcompanhantes.addEventListener('input', function() {
         limparStatus();
         this.value = this.value.replace(/[^0-9]/g, '');
@@ -169,29 +212,36 @@
         }
     });
 
-    inputNome.addEventListener('input', limparStatus);
+    // Lógica para mostrar/esconder campo de e-mail com base no lembrete
+    checkLembrete.addEventListener('change', function() {
+        if (this.checked) {
+            grupoEmail.classList.remove('hidden');
+            inputEmail.required = true;
+        } else {
+            grupoEmail.classList.add('hidden');
+            inputEmail.required = false;
+            inputEmail.value = ""; // Limpa o e-mail se desmarcar
+        }
+    });
 
-    // LÓGICA DE ENVIO OTIMIZADA (Dispara e esquece)
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
         btn.disabled = true;
         btn.innerText = "Enviando...";
         status.innerText = "Processando...";
         status.style.color = "#8e44ad";
 
-        const acompanhantesValor = inputAcompanhantes.value === "" ? 0 : inputAcompanhantes.value;
-
         const dados = {
-            nome: inputNome.value || "Não informado",
+            nome: inputNome.value,
+            email: inputEmail.value || "Não informado",
             presenca: selectPresenca.value,
-            acompanhantes: acompanhantesValor,
+            acompanhantes: inputAcompanhantes.value || 0,
+            lembrete: checkLembrete.checked,
             id: Date.now().toString()
         };
 
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
 
-        // O envio acontece em segundo plano sem await
         fetch(APPS_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors', 
@@ -199,19 +249,15 @@
             body: JSON.stringify(dados)
         });
 
-        // Mostra o sucesso quase imediatamente para o usuário
         setTimeout(() => {
             status.innerText = "✅ Enviado com sucesso!";
             status.style.color = "#27ae60";
             form.reset();
-            
-            // Retorna ao estado inicial
-            camposExtras.classList.remove('hidden');
-            mensagemNegativa.classList.add('hidden');
-            inputNome.required = true;
+            camposExtras.classList.add('hidden');
+            grupoEmail.classList.add('hidden'); // Esconde o e-mail após reset
             btn.disabled = false;
             btn.innerText = "Enviar Confirmação";
-        }, 600); 
+        }, 800); 
     });
 </script>
 </body>
