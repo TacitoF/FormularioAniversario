@@ -13,9 +13,20 @@
             --text: #2f3640;
         }
 
+        /* Animações */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOutDown {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(20px); }
+        }
+
+        .fade-out {
+            animation: fadeOutDown 0.5s ease-in forwards;
+            pointer-events: none;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -34,6 +45,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            transition: background 0.5s;
         }
 
         .card {
@@ -64,7 +76,6 @@
             background: rgba(255, 255, 255, 0.9);
         }
 
-        /* Estilo do Switch (Lembrete) */
         .switch-group {
             display: flex;
             align-items: center;
@@ -125,12 +136,11 @@
 
         .hidden { display: none !important; }
         #status { margin-top: 15px; text-align: center; font-weight: 600; min-height: 24px; }
-
     </style>
 </head>
 <body>
 
-<div class="card">
+<div class="card" id="mainCard">
     <h1>Aniversário de Sofia</h1>
     <p class="subtitle">Confirme sua presença abaixo! ✨</p>
 
@@ -183,6 +193,7 @@
     const form = document.getElementById('rsvpForm');
     const status = document.getElementById('status');
     const btn = document.getElementById('btnEnviar');
+    const card = document.getElementById('mainCard');
     const selectPresenca = document.getElementById('presenca');
     const camposExtras = document.getElementById('camposExtras');
     const mensagemNegativa = document.getElementById('mensagemNegativa');
@@ -191,6 +202,20 @@
     const grupoEmail = document.getElementById('grupoEmail');
     const inputAcompanhantes = document.getElementById('acompanhantes');
     const checkLembrete = document.getElementById('lembrete');
+
+    // Reset ao voltar do navegador
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+            card.classList.remove('fade-out');
+            form.reset();
+            camposExtras.classList.add('hidden');
+            mensagemNegativa.classList.add('hidden');
+            grupoEmail.classList.add('hidden');
+            status.innerText = "";
+            btn.disabled = false;
+            btn.innerText = "Enviar Confirmação";
+        }
+    });
 
     function limparStatus() { status.innerText = ""; }
 
@@ -212,7 +237,6 @@
         }
     });
 
-    // Lógica para mostrar/esconder campo de e-mail com base no lembrete
     checkLembrete.addEventListener('change', function() {
         if (this.checked) {
             grupoEmail.classList.remove('hidden');
@@ -220,16 +244,18 @@
         } else {
             grupoEmail.classList.add('hidden');
             inputEmail.required = false;
-            inputEmail.value = ""; // Limpa o e-mail se desmarcar
+            inputEmail.value = ""; 
         }
     });
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
+        
         btn.disabled = true;
-        btn.innerText = "Enviando...";
-        status.innerText = "Processando...";
-        status.style.color = "#8e44ad";
+        btn.innerText = "Tudo certo!";
+        
+        // Inicia a transição visual
+        card.classList.add('fade-out');
 
         const dados = {
             nome: inputNome.value,
@@ -249,16 +275,10 @@
             body: JSON.stringify(dados)
         });
 
+        // Pequeno delay (350ms) para a animação de saída ser vista antes de mudar a URL
         setTimeout(() => {
-            status.innerText = "✅ Enviado com sucesso!";
-            status.style.color = "#27ae60";
-            form.reset();
-            camposExtras.classList.add('hidden');
-            grupoEmail.classList.add('hidden');
-            btn.disabled = false;
-            btn.innerText = "Enviar Confirmação";
             window.location.href = "confirmado.html";
-        }, 800); 
+        }, 350);
     });
 </script>
 </body>
