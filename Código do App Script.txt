@@ -45,7 +45,7 @@ function doPost(e) {
 }
 
 /**
- * RELATÓRIO CONSOLIDADO DIÁRIO (Gatilho: Diário, 10:00 às 11:00)
+ * RELATÓRIO CONSOLIDADO DIÁRIO
  */
 function enviarResumoConsolidado() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
@@ -78,14 +78,14 @@ function doGet() {
 }
 
 /**
- * LEMBRETE DE 1 SEMANA (Gatilho: Data Específica 10/07/2026)
+ * LEMBRETE DE 1 SEMANA (Gatilho: Data Específica)
  */
 function enviarLembreteUmaSemana() {
   gerarEEnviarEmailLembrete("Falta apenas 1 semana! 🎂", "O grande dia está chegando e mal podemos esperar para comemorar com você!");
 }
 
 /**
- * NOVO: LEMBRETE DE VÉSPERA (Gatilho: Data Específica 16/07/2026)
+ * NOVO: LEMBRETE DE VÉSPERA (Gatilho: Data Específica)
  */
 function enviarLembreteAmanha() {
   gerarEEnviarEmailLembrete("É amanhã! 🥳", "Coração a mil! Passando para lembrar que amanhã teremos a festa da Sofia. Prepare o sorriso e venha comemorar conosco!");
