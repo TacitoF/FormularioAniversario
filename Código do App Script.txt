@@ -1,106 +1,100 @@
+/**
+ * Recebe os dados do formulário e gerencia gravação/remoção com trava de segurança.
+ */
 function doPost(e) {
-  var requestData = JSON.parse(e.postData.contents);
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var lock = LockService.getPublicLock();
+  try {
+    lock.waitLock(30000); 
+  } catch (f) {
+    return ContentService.createTextOutput("Erro: Servidor ocupado.").setMimeType(ContentService.MimeType.TEXT);
+  }
 
-  // --- LÓGICA DE REMOÇÃO ---
-  if (requestData.action === 'delete') {
-    var rows = sheet.getDataRange().getValues();
-    var idAlvo = String(requestData.id).trim(); 
-    for (var i = rows.length - 1; i >= 1; i--) {
-      if (String(rows[i][3]).trim() === idAlvo) {
-        sheet.deleteRow(i + 1);
-        return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
+  try {
+    var requestData = JSON.parse(e.postData.contents);
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+
+    if (requestData.action === 'delete') {
+      var rows = sheet.getDataRange().getValues();
+      var idAlvo = String(requestData.id).trim(); 
+      for (var i = rows.length - 1; i >= 1; i--) {
+        if (String(rows[i][3]).trim() === idAlvo) {
+          sheet.deleteRow(i + 1);
+          return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
+        }
       }
     }
-    return ContentService.createTextOutput("Erro").setMimeType(ContentService.MimeType.TEXT);
-  }
 
-  // --- LÓGICA DE ADIÇÃO ---
-  sheet.appendRow([
-    requestData.nome, 
-    requestData.presenca, 
-    requestData.acompanhantes, 
-    "'" + requestData.id,
-    requestData.email,
-    requestData.lembrete
-  ]);
+    sheet.appendRow([
+      requestData.nome, 
+      requestData.presenca, 
+      requestData.acompanhantes, 
+      "'" + requestData.id,
+      requestData.email,
+      requestData.lembrete
+    ]);
 
-  // Força o salvamento imediato para garantir que a lista no e-mail saia atualizada
-  SpreadsheetApp.flush();
+    SpreadsheetApp.flush();
+    return ContentService.createTextOutput("Sucesso").setMimeType(ContentService.MimeType.TEXT);
 
-  // --- TAREFAS DE BACKGROUND (E-mail de Notificação) ---
-  try {
-    var data = sheet.getDataRange().getValues();
-    var confirmados = data.filter(function(row, index) {
-      return index > 0 && row[1] === 'Sim';
-    });
-
-    var totalPessoas = confirmados.reduce(function(acc, row) {
-      return acc + 1 + parseInt(row[2] || 0);
-    }, 0);
-
-    var htmlBody = "<div style='font-family: sans-serif; color: #444; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 25px; border-radius: 20px;'>";
-    htmlBody += "<div style='text-align: center; margin-bottom: 30px;'>";
-    htmlBody += "<h1 style='color: #8e44ad; margin: 0; font-size: 1.6em;'>✨ " + requestData.nome + " confirmou a presença!</h1>";
-    htmlBody += "</div>";
-    
-    // Painel de Resumo
-    htmlBody += "<table style='width: 100%; background: #f9f4ff; border-radius: 15px; border-spacing: 0; margin-bottom: 30px;'><tr>";
-    htmlBody += "<td style='width: 50%; text-align: center; padding: 20px; border-right: 1px solid #e0d0f0;'><span style='font-size: 0.85em; color: #8e44ad; text-transform: uppercase; font-weight: bold;'>Convites</span><br><strong style='font-size: 2.2em; color: #333;'>" + confirmados.length + "</strong></td>";
-    htmlBody += "<td style='width: 50%; text-align: center; padding: 20px;'><span style='font-size: 0.85em; color: #8e44ad; text-transform: uppercase; font-weight: bold;'>Total de Pessoas</span><br><strong style='font-size: 2.2em; color: #333;'>" + totalPessoas + "</strong></td>";
-    htmlBody += "</tr></table>";
-
-    // --- REINSERÇÃO DA TABELA DE CONVIDADOS NO EMAIL ---
-    htmlBody += "<h3 style='color: #8e44ad; font-size: 1em; margin-bottom: 15px;'>LISTA ATUALIZADA:</h3>";
-    htmlBody += "<table style='border-collapse: collapse; width: 100%;'>";
-    htmlBody += "<thead><tr style='border-bottom: 2px solid #f3e5f5; color: #8e44ad;'>";
-    htmlBody += "<th style='padding: 12px; text-align: left; font-size: 0.9em;'>CONVIDADO</th>";
-    htmlBody += "<th style='padding: 12px; text-align: right; font-size: 0.9em;'>ACOMPANHANTES</th>";
-    htmlBody += "</tr></thead><tbody>";
-
-    for (var i = 0; i < confirmados.length; i++) {
-      htmlBody += "<tr style='border-bottom: 1px solid #f9f9f9;'>";
-      htmlBody += "<td style='padding: 14px 12px; font-weight: 500; color: #333;'>" + confirmados[i][0] + "</td>";
-      htmlBody += "<td style='padding: 14px 12px; text-align: right; color: #777;'>+" + confirmados[i][2] + "</td>";
-      htmlBody += "</tr>";
-    }
-    htmlBody += "</tbody></table>";
-
-    htmlBody += "<div style='text-align: center; margin-top: 35px;'><a href='https://sofiafaz5.vercel.app/lista.html' style='background-color: #8e44ad; color: white; padding: 15px 25px; text-decoration: none; border-radius: 12px; font-weight: bold; display: inline-block;'>Acessar Painel Online</a></div>";
-    htmlBody += "</div>";
-
-    MailApp.sendEmail({
-      to: "tacito1.filho@gmail.com, ursula.bastos78@gmail.com", 
-      subject: "✅ Nova Confirmação: " + requestData.nome,
-      htmlBody: htmlBody,
-      name: "Sistema Sofia 🎂"
-    });
   } catch (err) {
-    console.log("Erro no e-mail de notificação: " + err);
+    Logger.log("Erro no doPost: " + err);
+    return ContentService.createTextOutput("Erro").setMimeType(ContentService.MimeType.TEXT);
+  } finally {
+    lock.releaseLock();
   }
-
-  return ContentService.createTextOutput("Sucesso").setMimeType(ContentService.MimeType.TEXT);
 }
 
+/**
+ * RELATÓRIO CONSOLIDADO DIÁRIO (Gatilho: Diário, 10:00 às 11:00)
+ */
+function enviarResumoConsolidado() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  var confirmados = data.filter(function(row, index) { return index > 0 && row[1] === 'Sim'; });
+  if (confirmados.length === 0) return;
+
+  var totalPessoas = confirmados.reduce(function(acc, row) { return acc + 1 + parseInt(row[2] || 0); }, 0);
+
+  var htmlBody = "<div style='font-family: sans-serif; color: #444; max-width: 600px; margin: auto; border: 1px solid #eee; padding: 25px; border-radius: 20px;'>";
+  htmlBody += "<h2 style='color: #8e44ad; text-align: center;'>📊 Relatório de Confirmados: Sofia 5 Anos</h2>";
+  htmlBody += "<table style='width: 100%; background: #f9f4ff; border-radius: 15px; margin-bottom: 25px;'><tr><td style='text-align: center; padding: 20px;'><b>Convites:</b><br>" + confirmados.length + "</td><td style='text-align: center; padding: 20px;'><b>Total Pessoas:</b><br>" + totalPessoas + "</td></tr></table>";
+  htmlBody += "<table style='width: 100%; border-collapse: collapse;'><thead><tr style='color: #8e44ad; border-bottom: 2px solid #eee;'><th align='left' style='padding: 10px;'>CONVIDADO</th><th align='right' style='padding: 10px;'>ACOMP.</th></tr></thead><tbody>";
+  confirmados.forEach(function(convidado) { htmlBody += "<tr style='border-bottom: 1px solid #f9f9f9;'><td style='padding: 12px 10px;'>" + convidado[0] + "</td><td align='right' style='padding: 12px 10px; color: #777;'>+" + convidado[2] + "</td></tr>"; });
+  htmlBody += "</tbody></table><div style='text-align: center; margin-top: 30px;'><a href='https://sofiafaz5.vercel.app/lista.html' style='background-color: #8e44ad; color: white; padding: 15px 25px; text-decoration: none; border-radius: 12px; font-weight: bold;'>Ver Painel Completo</a></div></div>";
+
+  MailApp.sendEmail({ to: "tacito1.filho@gmail.com, ursula.bastos78@gmail.com", subject: "📊 Resumo Atualizado: " + confirmados.length + " Convites", htmlBody: htmlBody, name: "Sistema Sofia 🎂" });
+}
+
+/**
+ * Retorna dados para a página lista.html
+ */
 function doGet() {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   var data = sheet.getDataRange().getValues();
-  var result = [];
-
-  for (var i = 1; i < data.length; i++) {
-    result.push({
-      nome: data[i][0],
-      presenca: data[i][1],
-      acompanhantes: data[i][2],
-      id: data[i][3],
-      email: data[i][4],
-      lembrete: data[i][5] === true || data[i][5] === "TRUE"
-    });
-  }
+  var result = data.slice(1).map(function(row) {
+    return { nome: row[0], presenca: row[1], acompanhantes: row[2], id: row[3], email: row[4], lembrete: row[5] === true || row[5] === "TRUE" };
+  });
   return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
 }
 
+/**
+ * LEMBRETE DE 1 SEMANA (Gatilho: Data Específica 10/07/2026)
+ */
 function enviarLembreteUmaSemana() {
+  gerarEEnviarEmailLembrete("Falta apenas 1 semana! 🎂", "O grande dia está chegando e mal podemos esperar para comemorar com você!");
+}
+
+/**
+ * NOVO: LEMBRETE DE VÉSPERA (Gatilho: Data Específica 16/07/2026)
+ */
+function enviarLembreteAmanha() {
+  gerarEEnviarEmailLembrete("É amanhã! 🥳", "Coração a mil! Passando para lembrar que amanhã teremos a festa da Sofia. Prepare o sorriso e venha comemorar conosco!");
+}
+
+/**
+ * FUNÇÃO AUXILIAR DE DISPARO DE LEMBRETES (Padronizada)
+ */
+function gerarEEnviarEmailLembrete(titulo, mensagemPersonalizada) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   var data = sheet.getDataRange().getValues();
   var corPrincipal = "#8e44ad";
@@ -116,30 +110,55 @@ function enviarLembreteUmaSemana() {
       var htmlBody = `
         <div style="font-family: sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; border-radius: 20px; overflow: hidden;">
           <div style="background-color: ${corPrincipal}; padding: 30px; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 24px;">Falta apenas 1 semana! 🎂</h1>
+            <h1 style="color: white; margin: 0; font-size: 24px;">${titulo}</h1>
           </div>
           <div style="padding: 30px; background-color: white; text-align: center;">
             <p style="font-size: 18px;">Olá, <strong>${nome}</strong>!</p>
-            <p style="color: #666; line-height: 1.6;">Estamos passando para lembrar que o <strong>Aniversário de Sofia</strong> está chegando!</p>
-            <div style="background-color: ${corFundo}; padding: 20px; border-radius: 15px; margin: 25px 0; border: 1px dashed ${corPrincipal};">
-                <p style="margin: 5px 0;">📍 <strong>Local:</strong> Buffet Magic Festas</p>
-                <p style="margin: 5px 0;">⏰ <strong>Horário:</strong> 18:00h</p>
-                <p style="margin: 5px 0;">📅 <strong>Data:</strong> 04 de Fevereiro</p>
+            <p style="color: #666; line-height: 1.6;">${mensagemPersonalizada}</p>
+            
+            <div style="background-color: ${corFundo}; padding: 25px; border-radius: 15px; margin: 25px 0; border: 1px dashed ${corPrincipal}; text-align: left;">
+                <p style="margin: 8px 0;">📅 <strong>Data:</strong> 17 de Julho de 2026</p>
+                <p style="margin: 8px 0;">⏰ <strong>Horário:</strong> A partir das 19:00h</p>
+                <p style="margin: 8px 0;">📍 <strong>Local:</strong> Fazendo a festa Kids</p>
+                <p style="margin: 8px 0; font-size: 14px; color: #555;">R. Cel. Anízio Rodrigues Coelho, 275 - Boa Viagem, Recife - PE</p>
             </div>
-            <p style="color: #666; font-size: 14px;">Mal podemos esperar para comemorar juntos!</p>
+
+            <p style="font-weight: bold; color: ${corPrincipal}; margin-bottom: 20px;">Como chegar:</p>
+            
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td align="center">
+                  <table border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td align="center" style="padding: 10px;">
+                        <a href="https://www.google.com/maps/search/?api=1&query=Fazendo+a+festa+Kids+Recife" target="_blank" 
+                           style="background-color: #4285F4; color: #ffffff; padding: 12px 20px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 14px; display: inline-block; min-width: 130px; text-align: center;">
+                           Google Maps
+                        </a>
+                      </td>
+                      <td align="center" style="padding: 10px;">
+                        <a href="https://waze.com/ul?q=R.+Cel.+Anízio+Rodrigues+Coelho,+275+Boa+Viagem+Recife&navigate=yes" target="_blank" 
+                           style="background-color: #33CCFF; color: #1e272e; padding: 12px 20px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 14px; display: inline-block; min-width: 130px; text-align: center;">
+                           Waze
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+            <p style="color: #999; font-size: 11px; margin-top: 30px;">Lembrete enviado automaticamente pelo sistema de confirmação da Sofia.</p>
           </div>
         </div>`;
 
       try {
         MailApp.sendEmail({
           to: emailConvidado,
-          subject: "Falta 1 semana! 🎂 Aniversário de Sofia",
+          subject: titulo + " Aniversário da Sofia",
           htmlBody: htmlBody,
-          name: "Família de Sofia 🎂"
+          name: "Família da Sofia 🎂"
         });
-      } catch (e) {
-        Logger.log("Erro ao enviar para " + emailConvidado + ": " + e);
-      }
+      } catch (e) { Logger.log("Erro ao enviar: " + e); }
     }
   }
 }
