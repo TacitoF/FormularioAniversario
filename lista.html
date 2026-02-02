@@ -107,7 +107,8 @@
     </div>
     <div class="stats-container">
         <div>Convidados: <b id="countConfirmados" style="color:#fff">0</b></div>
-        <div>Pessoas: <b id="countTotal" style="color:#fff">0</b></div>
+        <div>Ausentes: <b id="countAusentes" style="color:#e57373">0</b></div>
+        <div>Total: <b id="countTotal" style="color:#fff">0</b></div>
     </div>
     <div id="loading" style="text-align:center; opacity:0.5; font-size: 0.8rem;">Sincronizando...</div>
     <div class="guest-list" id="lista"></div>
@@ -136,25 +137,33 @@
             const data = await res.json();
             document.getElementById('loading').style.display = 'none';
             
+            // Cálculos
             const confirmados = data.filter(g => g.presenca === 'Sim').length;
+            const ausentes = data.filter(g => g.presenca === 'Não').length;
             const total = data.reduce((acc, g) => g.presenca === 'Sim' ? acc + 1 + parseInt(g.acompanhantes || 0) : acc, 0);
 
+            // Atualiza contadores
             document.getElementById('countConfirmados').innerText = confirmados;
+            document.getElementById('countAusentes').innerText = ausentes;
             document.getElementById('countTotal').innerText = total;
 
+            // Renderiza lista
             document.getElementById('lista').innerHTML = data.map(g => `
                 <div class="guest-card" data-id="${g.id}">
                     <div>
                         <div style="font-weight:500; display:flex; align-items:center; gap:8px;">
                             ${g.nome}
                             <span class="status-tag ${g.presenca === 'Sim' ? 'tag-sim' : 'tag-nao'}">
-                                ${g.presenca === 'Sim' ? 'CONFIRMADO' : 'NÃO CONFIRMADO'}
+                                ${g.presenca === 'Sim' ? 'CONFIRMADO' : 'NÃO VAI'}
                             </span>
+                            ${g.presenca === 'Sim' ? `
                             <span class="bell-icon ${g.lembrete ? 'bell-active' : 'bell-inactive'}" title="${g.lembrete ? 'Lembrete ativo' : 'Sem lembrete'}">
                                 🔔
-                            </span>
+                            </span>` : ''}
                         </div>
-                        <div class="acompanhantes-label" style="font-size:0.75rem; color:var(--text-sub);">+${g.acompanhantes} acompanhantes</div>
+                        <div class="acompanhantes-label" style="font-size:0.75rem; color:var(--text-sub);">
+                            ${g.presenca === 'Sim' ? `+${g.acompanhantes} acompanhantes` : 'Ausência justificada'}
+                        </div>
                     </div>
                     <button class="btn-delete" onclick="openModal('${g.nome.replace(/'/g, "\\'")}', '${g.id}')">✕</button>
                 </div>
@@ -174,6 +183,7 @@
 
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
+    // Lógica de exclusão com atualização dos contadores novos
     document.getElementById('confirmDelete').onclick = () => {
         const btn = document.getElementById('confirmDelete');
         const idParaRemover = targetID;
@@ -192,6 +202,7 @@
             
             if (card) {
                 const countConvidadosEl = document.getElementById('countConfirmados');
+                const countAusentesEl = document.getElementById('countAusentes');
                 const countTotalEl = document.getElementById('countTotal');
 
                 const acompanhantesText = card.querySelector('.acompanhantes-label').innerText;
@@ -201,6 +212,8 @@
                 if (isConfirmado) {
                     countConvidadosEl.innerText = Math.max(0, parseInt(countConvidadosEl.innerText) - 1);
                     countTotalEl.innerText = Math.max(0, parseInt(countTotalEl.innerText) - (1 + acompanhantesQtd));
+                } else {
+                    countAusentesEl.innerText = Math.max(0, parseInt(countAusentesEl.innerText) - 1);
                 }
 
                 card.style.opacity = '0';
