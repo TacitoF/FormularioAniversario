@@ -184,7 +184,7 @@
                 </div>
 
                 <div class="switch-group">
-                    <span style="font-size: 0.9rem; color: var(--text); font-weight: 600;">Me lembre 1 semana antes 🔔</span>
+                    <span style="font-size: 0.9rem; color: var(--text); font-weight: 600;">Me lembre 1 semana e 1 dia antes 🔔</span>
                     <label class="switch">
                         <input type="checkbox" id="lembrete">
                         <span class="slider"></span>
@@ -299,11 +299,10 @@
         });
 
         setTimeout(() => {
-            // REDIRECIONAMENTO INTELIGENTE
             if (selectPresenca.value === "Sim") {
                 window.location.href = "confirmado.html";
             } else {
-                window.location.href = "obrigado.html"; // Redireciona para a nova tela de agradecimento
+                window.location.href = "obrigado.html";
             }
         }, 350);
     });

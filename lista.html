@@ -76,10 +76,26 @@
         .tag-sim { color: var(--confirmado); border: 1px solid rgba(129, 199, 132, 0.2); }
         .tag-nao { color: var(--ausente); border: 1px solid rgba(229, 115, 115, 0.2); }
 
-        /* Estilo para o ícone de lembrete */
-        .bell-icon { font-size: 0.9rem; margin-left: 5px; }
-        .bell-active { color: #f1c40f; filter: drop-shadow(0 0 5px rgba(241, 196, 15, 0.3)); }
-        .bell-inactive { color: rgba(255,255,255,0.1); }
+        /* --- CORREÇÃO DO SINO PARA IOS --- */
+        .bell-icon { 
+            font-size: 1rem; 
+            margin-left: 6px; 
+            vertical-align: middle;
+            transition: all 0.3s ease;
+        }
+
+        /* Ativo: Mantém cor original e adiciona brilho dourado */
+        .bell-active { 
+            opacity: 1;
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.6));
+        }
+
+        /* Inativo: Remove cor (fica cinza/pb) e reduz opacidade drasticamente */
+        .bell-inactive { 
+            opacity: 0.15;
+            filter: grayscale(100%); 
+        }
+        /* -------------------------------- */
 
         .btn-delete { background: none; border: none; color: var(--text-sub); font-size: 1.1rem; cursor: pointer; opacity: 0.5; }
         .btn-delete:hover { opacity: 1; color: var(--ausente); }
