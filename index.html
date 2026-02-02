@@ -136,7 +136,6 @@
 
         .hidden { display: none !important; }
         
-        /* Estilo da mensagem negativa */
         #mensagemNegativa {
             background-color: rgba(142, 68, 173, 0.1);
             color: var(--primary);
@@ -220,7 +219,6 @@
     const inputAcompanhantes = document.getElementById('acompanhantes');
     const checkLembrete = document.getElementById('lembrete');
 
-    // Reset ao voltar do navegador
     window.addEventListener("pageshow", function (event) {
         if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
             card.classList.remove('fade-out');
@@ -243,21 +241,17 @@
         limparStatus();
         const vaiAoEvento = this.value === "Sim";
         
-        // Mostra o container principal (onde tem o nome)
         camposExtras.classList.remove('hidden');
-        inputNome.required = true; // Nome agora é obrigatório para Sim e Não
+        inputNome.required = true; 
 
         if (vaiAoEvento) {
-            // Se vai: Mostra acompanhantes/email e esconde msg negativa
             camposOpcionais.classList.remove('hidden');
             mensagemNegativa.classList.add('hidden');
             btn.innerText = "Enviar Confirmação";
         } else {
-            // Se NÃO vai: Esconde acompanhantes/email e mostra msg negativa
             camposOpcionais.classList.add('hidden');
             mensagemNegativa.classList.remove('hidden');
             
-            // Reseta campos opcionais para evitar envio de lixo
             inputAcompanhantes.value = "";
             checkLembrete.checked = false;
             inputEmail.value = "";
@@ -284,8 +278,6 @@
         
         btn.disabled = true;
         btn.innerText = "Registrando...";
-        
-        // Inicia a transição visual
         card.classList.add('fade-out');
 
         const dados = {
@@ -306,11 +298,13 @@
             body: JSON.stringify(dados)
         });
 
-        // Pequeno delay (350ms) para a animação de saída ser vista antes de mudar a URL
         setTimeout(() => {
-            // Se confirmou presença, vai para o mapa. Se não, ainda vai para lá (para ver dicas de presente caso queira enviar), 
-            // ou você poderia redirecionar para outra página se preferisse. Mantive padrão.
-            window.location.href = "confirmado.html";
+            // REDIRECIONAMENTO INTELIGENTE
+            if (selectPresenca.value === "Sim") {
+                window.location.href = "confirmado.html";
+            } else {
+                window.location.href = "obrigado.html"; // Redireciona para a nova tela de agradecimento
+            }
         }, 350);
     });
 </script>
