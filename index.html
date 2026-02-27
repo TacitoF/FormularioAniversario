@@ -34,9 +34,11 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             padding: 20px;
             overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             position: relative;
         }
 
@@ -150,6 +152,7 @@
             z-index: 10;
             width: 100%;
             max-width: 460px;
+            margin: auto;
             animation: bounceIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 

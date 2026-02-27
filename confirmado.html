@@ -17,8 +17,8 @@
         body {
             font-family:'Nunito',sans-serif;
             background:linear-gradient(180deg,#a8d8f8 0%,#c5e8ff 35%,#ddf2ff 60%,#eef8ff 80%,#f8fdff 100%);
-            min-height:100vh; display:flex; justify-content:center; align-items:center;
-            padding:20px; overflow:hidden; position:relative;
+            min-height:100vh; display:flex; justify-content:center; align-items:flex-start;
+            padding:20px; overflow-x:hidden; overflow-y:auto; -webkit-overflow-scrolling:touch; position:relative;
         }
 
         .scene { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
@@ -67,7 +67,7 @@
 
         /* Card */
         .card-wrapper {
-            position:relative; z-index:10; width:100%; max-width:460px;
+            position:relative; z-index:10; width:100%; max-width:460px; margin:auto;
             animation:popIn 0.7s cubic-bezier(0.34,1.56,0.64,1) forwards;
         }
         @keyframes popIn { from{opacity:0;transform:scale(0.85) translateY(30px);} to{opacity:1;transform:scale(1) translateY(0);} }
