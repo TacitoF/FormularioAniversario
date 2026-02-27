@@ -24,62 +24,124 @@
 
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #c9eeff;
-            background-image: url('fundo2.png');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-position: center;
-            background-size: cover;
+            background: linear-gradient(180deg,
+                #a8d8f8 0%,
+                #c5e8ff 35%,
+                #ddf2ff 60%,
+                #eef8ff 80%,
+                #f8fdff 100%
+            );
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
             overflow-x: hidden;
+            position: relative;
         }
 
-        /* Elementos decorativos flutuantes */
-        .floaties {
+        /* ── Cenário CSS puro ── */
+        .scene {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            inset: 0;
             pointer-events: none;
             z-index: 0;
             overflow: hidden;
         }
 
-        .star {
+        /* Arco-íris de fundo grande */
+        .bg-rainbow {
             position: absolute;
-            font-size: 1.5rem;
-            animation: floatStar linear infinite;
-            opacity: 0.7;
+            bottom: -10vw;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160vw;
+            height: 80vw;
+            max-height: 700px;
+            border-radius: 50% 50% 0 0;
+            background: transparent;
+            box-shadow:
+                0   0   0  18px rgba(255, 80,  80,  0.18),
+                0   0   0  36px rgba(255,165,  0,  0.15),
+                0   0   0  54px rgba(255,220,  0,  0.14),
+                0   0   0  72px rgba(100,210, 80,  0.13),
+                0   0   0  90px rgba( 60,160,240,  0.12),
+                0   0   0 108px rgba(140, 80,220,  0.11),
+                0   0   0 126px rgba(255,110,180,  0.10);
         }
 
-        @keyframes floatStar {
-            0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-            10%  { opacity: 0.7; }
-            90%  { opacity: 0.7; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
-        }
-
-        /* Nuvens decorativas */
+        /* Nuvens CSS puras */
         .cloud {
-            position: fixed;
-            background: rgba(255,255,255,0.6);
+            position: absolute;
+            background: white;
             border-radius: 50px;
-            animation: driftCloud linear infinite;
+            opacity: 0;
+            animation: cloudDrift linear infinite;
+            filter: drop-shadow(0 4px 12px rgba(180,220,255,0.4));
         }
         .cloud::before, .cloud::after {
             content: '';
             position: absolute;
-            background: rgba(255,255,255,0.6);
+            background: white;
             border-radius: 50%;
         }
-        .cloud::before { width: 50%; height: 150%; top: -40%; left: 15%; }
-        .cloud::after  { width: 40%; height: 130%; top: -30%; right: 15%; }
+        .cloud::before { width: 55%; height: 180%; top: -50%; left: 12%; }
+        .cloud::after  { width: 42%; height: 150%; top: -35%; right: 14%; }
 
-        @keyframes driftCloud {
-            from { transform: translateX(-200px); }
-            to   { transform: translateX(calc(100vw + 200px)); }
+        .cloud-1  { width:160px; height:50px; top:8%;  animation-duration:28s; animation-delay:0s;   }
+        .cloud-2  { width:220px; height:65px; top:18%; animation-duration:38s; animation-delay:-10s; }
+        .cloud-3  { width:130px; height:42px; top:5%;  animation-duration:22s; animation-delay:-6s;  }
+        .cloud-4  { width:190px; height:58px; top:28%; animation-duration:45s; animation-delay:-18s; }
+        .cloud-5  { width:100px; height:34px; top:12%; animation-duration:20s; animation-delay:-3s;  }
+        .cloud-6  { width:250px; height:70px; top:22%; animation-duration:55s; animation-delay:-25s; }
+
+        @keyframes cloudDrift {
+            0%   { transform: translateX(-300px); opacity: 0; }
+            5%   { opacity: 0.88; }
+            95%  { opacity: 0.88; }
+            100% { transform: translateX(calc(100vw + 300px)); opacity: 0; }
+        }
+
+        /* Estrelinhas / brilhos flutuantes */
+        .sparkle {
+            position: absolute;
+            border-radius: 50%;
+            animation: sparklePop ease-in-out infinite;
+        }
+
+        @keyframes sparklePop {
+            0%, 100% { transform: scale(0) rotate(0deg);   opacity: 0; }
+            30%, 70% { transform: scale(1) rotate(180deg); opacity: 1; }
+        }
+
+        /* Emojis flutuantes temáticos */
+        .floatie {
+            position: absolute;
+            font-size: 1.4rem;
+            animation: floatUp linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0%   { transform: translateY(0)    rotate(0deg)   scale(0.8); opacity: 0; }
+            10%  { opacity: 0.75; }
+            90%  { opacity: 0.75; }
+            100% { transform: translateY(-105vh) rotate(20deg) scale(1.1); opacity: 0; }
+        }
+
+        /* Bolinhas coloridas decorativas */
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            animation: bubbleRise linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes bubbleRise {
+            0%   { transform: translateY(20px); opacity: 0; }
+            15%  { opacity: 0.5; }
+            85%  { opacity: 0.5; }
+            100% { transform: translateY(-110vh); opacity: 0; }
         }
 
         /* Card principal */
@@ -438,8 +500,16 @@
 </head>
 <body>
 
-<!-- Floaties decorativos -->
-<div class="floaties" id="floaties"></div>
+<!-- Cenário CSS puro -->
+<div class="scene" id="scene">
+    <div class="bg-rainbow"></div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+    <div class="cloud cloud-5"></div>
+    <div class="cloud cloud-6"></div>
+</div>
 
 <div class="card-wrapper" id="cardWrapper">
     <div class="rainbow-bar"></div>
@@ -508,30 +578,54 @@
 </div>
 
 <script>
-    // Floaties animados
-    const floatItems = ['⭐', '✨', '🌟', '💫', '🎀', '🌈', '💕', '🎈', '🌸', '💜'];
-    const floaties = document.getElementById('floaties');
-    for (let i = 0; i < 15; i++) {
+    // Partículas da cena
+    const scene = document.getElementById('scene');
+    const floatEmojis = ['⭐','✨','🌟','💫','🎀','💕','🌸','💜','🎈','🌈'];
+    const bubbleColors = ['#FF6EB4','#C77DFF','#FFD966','#74C7EC','#90E0A0','#FFB3D9'];
+
+    // Emojis flutuantes
+    for (let i = 0; i < 14; i++) {
         const el = document.createElement('div');
-        el.className = 'star';
-        el.innerText = floatItems[Math.floor(Math.random() * floatItems.length)];
-        el.style.left = Math.random() * 100 + 'vw';
-        el.style.animationDuration = (8 + Math.random() * 12) + 's';
-        el.style.animationDelay = (Math.random() * 10) + 's';
-        el.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
-        floaties.appendChild(el);
+        el.className = 'floatie';
+        el.innerText = floatEmojis[i % floatEmojis.length];
+        el.style.left = (Math.random() * 100) + 'vw';
+        el.style.bottom = '-60px';
+        el.style.fontSize = (0.9 + Math.random() * 1.2) + 'rem';
+        el.style.animationDuration = (10 + Math.random() * 14) + 's';
+        el.style.animationDelay  = (Math.random() * 14) + 's';
+        scene.appendChild(el);
     }
 
-    // Nuvens
-    for (let i = 0; i < 3; i++) {
-        const c = document.createElement('div');
-        c.className = 'cloud';
-        c.style.width = (80 + Math.random() * 80) + 'px';
-        c.style.height = (30 + Math.random() * 20) + 'px';
-        c.style.top = (10 + Math.random() * 30) + 'vh';
-        c.style.animationDuration = (30 + Math.random() * 20) + 's';
-        c.style.animationDelay = (Math.random() * 20) + 's';
-        floaties.appendChild(c);
+    // Bolinhas brilhantes
+    for (let i = 0; i < 10; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const size = 6 + Math.random() * 12;
+        b.style.cssText = `
+            width:${size}px; height:${size}px;
+            left:${Math.random()*100}vw; bottom:-20px;
+            background:${bubbleColors[Math.floor(Math.random()*bubbleColors.length)]};
+            animation-duration:${12+Math.random()*16}s;
+            animation-delay:${Math.random()*14}s;
+            opacity:0.5;
+        `;
+        scene.appendChild(b);
+    }
+
+    // Sparkles
+    const sparkleColors = ['#FFD966','#FF6EB4','#C77DFF','#74C7EC'];
+    for (let i = 0; i < 12; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        const size = 4 + Math.random() * 6;
+        s.style.cssText = `
+            width:${size}px; height:${size}px;
+            top:${Math.random()*90}vh; left:${Math.random()*100}vw;
+            background:${sparkleColors[Math.floor(Math.random()*sparkleColors.length)]};
+            animation-duration:${2+Math.random()*3}s;
+            animation-delay:${Math.random()*4}s;
+        `;
+        scene.appendChild(s);
     }
 
     const form = document.getElementById('rsvpForm');

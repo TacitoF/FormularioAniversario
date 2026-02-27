@@ -18,41 +18,89 @@
 
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #c9eeff;
-            background-image: url('fundo2.png');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-position: center;
-            background-size: cover;
+            background: linear-gradient(180deg,
+                #a8d8f8 0%,
+                #c5e8ff 35%,
+                #ddf2ff 60%,
+                #eef8ff 80%,
+                #f8fdff 100%
+            );
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
             overflow: hidden;
+            position: relative;
         }
 
-        /* Corações flutuantes */
-        .hearts {
+        .scene {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            inset: 0;
             pointer-events: none;
             z-index: 0;
+            overflow: hidden;
         }
 
-        .heart {
+        .bg-rainbow {
             position: absolute;
-            animation: floatHeart linear forwards;
-            font-size: 1.5rem;
+            bottom: -10vw; left: 50%;
+            transform: translateX(-50%);
+            width: 160vw; height: 80vw; max-height: 700px;
+            border-radius: 50% 50% 0 0;
+            background: transparent;
+            box-shadow:
+                0 0 0 18px rgba(255,80,80,.18),
+                0 0 0 36px rgba(255,165,0,.15),
+                0 0 0 54px rgba(255,220,0,.14),
+                0 0 0 72px rgba(100,210,80,.13),
+                0 0 0 90px rgba(60,160,240,.12),
+                0 0 0 108px rgba(140,80,220,.11),
+                0 0 0 126px rgba(255,110,180,.10);
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0;
+            animation: cloudDrift linear infinite;
+            filter: drop-shadow(0 4px 12px rgba(180,220,255,0.4));
+        }
+        .cloud::before, .cloud::after { content:''; position:absolute; background:white; border-radius:50%; }
+        .cloud::before { width:55%; height:180%; top:-50%; left:12%; }
+        .cloud::after  { width:42%; height:150%; top:-35%; right:14%; }
+        .cloud-1 { width:160px; height:50px; top:8%;  animation-duration:28s; animation-delay:0s;   }
+        .cloud-2 { width:220px; height:65px; top:18%; animation-duration:38s; animation-delay:-10s; }
+        .cloud-3 { width:130px; height:42px; top:5%;  animation-duration:22s; animation-delay:-6s;  }
+
+        @keyframes cloudDrift {
+            0%   { transform:translateX(-300px); opacity:0; }
+            5%   { opacity:.85; }
+            95%  { opacity:.85; }
+            100% { transform:translateX(calc(100vw + 300px)); opacity:0; }
+        }
+
+        .floatie {
+            position: absolute;
+            animation: floatUp linear infinite;
             opacity: 0;
         }
+        @keyframes floatUp {
+            0%   { transform: translateY(0) rotate(0deg);    opacity: 0; }
+            10%  { opacity: 0.75; }
+            90%  { opacity: 0.75; }
+            100% { transform: translateY(-110vh) rotate(15deg); opacity: 0; }
+        }
 
-        @keyframes floatHeart {
-            0%   { transform: translateY(110vh) scale(0.5); opacity: 0; }
-            15%  { opacity: 0.8; }
-            85%  { opacity: 0.8; }
-            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        .sparkle {
+            position: absolute;
+            border-radius: 50%;
+            animation: sparklePop ease-in-out infinite;
+        }
+        @keyframes sparklePop {
+            0%,100% { transform:scale(0); opacity:0; }
+            40%,60% { transform:scale(1); opacity:1; }
         }
 
         .card-wrapper {
@@ -197,7 +245,12 @@
 </head>
 <body>
 
-<div class="hearts" id="hearts"></div>
+<div class="scene" id="scene">
+    <div class="bg-rainbow"></div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+</div>
 
 <div class="card-wrapper">
     <div class="rainbow-bar"></div>
@@ -227,18 +280,24 @@
 </div>
 
 <script>
-    const heartEmojis = ['❤️', '💕', '💗', '💖', '💝', '🩷', '💜', '🌸'];
-    const container = document.getElementById('hearts');
+    const scene = document.getElementById('scene');
+    const heartEmojis = ['❤️','💕','💗','💖','💝','🩷','💜','🌸'];
+    const sparkleColors = ['#FFD966','#FF6EB4','#C77DFF','#FF8FAB'];
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 16; i++) {
         const el = document.createElement('div');
-        el.className = 'heart';
-        el.innerText = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
-        el.style.left = Math.random() * 100 + 'vw';
-        el.style.animationDuration = (5 + Math.random() * 8) + 's';
-        el.style.animationDelay = (Math.random() * 6) + 's';
-        el.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
-        container.appendChild(el);
+        el.className = 'floatie';
+        el.innerText = heartEmojis[i % heartEmojis.length];
+        el.style.cssText = `left:${Math.random()*100}vw; bottom:-60px; font-size:${0.9+Math.random()*1.3}rem; animation-duration:${9+Math.random()*12}s; animation-delay:${Math.random()*10}s;`;
+        scene.appendChild(el);
+    }
+
+    for (let i = 0; i < 12; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        const size = 4 + Math.random() * 7;
+        s.style.cssText = `width:${size}px; height:${size}px; top:${Math.random()*90}vh; left:${Math.random()*100}vw; background:${sparkleColors[i%sparkleColors.length]}; animation-duration:${1.5+Math.random()*2.5}s; animation-delay:${Math.random()*3}s;`;
+        scene.appendChild(s);
     }
 </script>
 </body>

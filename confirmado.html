@@ -22,40 +22,99 @@
 
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #c9eeff;
-            background-image: url('fundo2.png');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-position: center;
-            background-size: cover;
+            background: linear-gradient(180deg,
+                #a8d8f8 0%,
+                #c5e8ff 35%,
+                #ddf2ff 60%,
+                #eef8ff 80%,
+                #f8fdff 100%
+            );
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
             overflow: hidden;
+            position: relative;
         }
 
-        /* Confetes */
-        .confetti-container {
+        /* ── Cenário CSS puro ── */
+        .scene {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            inset: 0;
             pointer-events: none;
             z-index: 0;
+            overflow: hidden;
         }
 
-        .confetti-piece {
+        .bg-rainbow {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
-            animation: confettiFall linear forwards;
+            bottom: -10vw;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160vw;
+            height: 80vw;
+            max-height: 700px;
+            border-radius: 50% 50% 0 0;
+            background: transparent;
+            box-shadow:
+                0   0   0  18px rgba(255, 80,  80,  0.18),
+                0   0   0  36px rgba(255,165,  0,  0.15),
+                0   0   0  54px rgba(255,220,  0,  0.14),
+                0   0   0  72px rgba(100,210, 80,  0.13),
+                0   0   0  90px rgba( 60,160,240,  0.12),
+                0   0   0 108px rgba(140, 80,220,  0.11),
+                0   0   0 126px rgba(255,110,180,  0.10);
         }
 
-        @keyframes confettiFall {
-            0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(720deg); opacity: 0.3; }
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0;
+            animation: cloudDrift linear infinite;
+            filter: drop-shadow(0 4px 12px rgba(180,220,255,0.4));
+        }
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+        .cloud::before { width: 55%; height: 180%; top: -50%; left: 12%; }
+        .cloud::after  { width: 42%; height: 150%; top: -35%; right: 14%; }
+        .cloud-1  { width:160px; height:50px; top:8%;  animation-duration:28s; animation-delay:0s;   }
+        .cloud-2  { width:220px; height:65px; top:18%; animation-duration:38s; animation-delay:-10s; }
+        .cloud-3  { width:130px; height:42px; top:5%;  animation-duration:22s; animation-delay:-6s;  }
+        .cloud-4  { width:190px; height:58px; top:28%; animation-duration:45s; animation-delay:-18s; }
+
+        @keyframes cloudDrift {
+            0%   { transform: translateX(-300px); opacity: 0; }
+            5%   { opacity: 0.85; }
+            95%  { opacity: 0.85; }
+            100% { transform: translateX(calc(100vw + 300px)); opacity: 0; }
+        }
+
+        .floatie {
+            position: absolute;
+            animation: floatUp linear infinite;
+            opacity: 0;
+        }
+        @keyframes floatUp {
+            0%   { transform: translateY(0) rotate(0deg);    opacity: 0; }
+            10%  { opacity: 0.75; }
+            90%  { opacity: 0.75; }
+            100% { transform: translateY(-110vh) rotate(20deg); opacity: 0; }
+        }
+
+        .sparkle {
+            position: absolute;
+            border-radius: 50%;
+            animation: sparklePop ease-in-out infinite;
+        }
+        @keyframes sparklePop {
+            0%, 100% { transform: scale(0); opacity: 0; }
+            40%, 60% { transform: scale(1); opacity: 1; }
         }
 
         /* Card */
@@ -290,7 +349,13 @@
 </head>
 <body>
 
-<div class="confetti-container" id="confetti"></div>
+<div class="scene" id="scene">
+    <div class="bg-rainbow"></div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+    <div class="cloud cloud-4"></div>
+</div>
 
 <div class="card-wrapper">
     <div class="rainbow-bar"></div>
@@ -352,25 +417,36 @@
 </div>
 
 <script>
-    // Gera confetes coloridos
-    const colors = ['#FF6EB4', '#C77DFF', '#FFD966', '#74C7EC', '#90E0A0', '#FF6B6B', '#FFB347'];
-    const container = document.getElementById('confetti');
-    const shapes = ['2px', '50%'];
+    // Cena animada
+    const scene = document.getElementById('scene');
+    const floatEmojis = ['🎉','✨','🌟','💫','🎀','💕','🎈','🌸','💜','⭐'];
+    const bubbleColors = ['#FF6EB4','#C77DFF','#FFD966','#74C7EC','#90E0A0'];
+    const sparkleColors = ['#FFD966','#FF6EB4','#C77DFF','#74C7EC'];
 
-    for (let i = 0; i < 80; i++) {
+    // Confetes / emojis festivos
+    for (let i = 0; i < 18; i++) {
         const el = document.createElement('div');
-        el.className = 'confetti-piece';
-        const size = 6 + Math.random() * 10;
-        el.style.cssText = `
-            left: ${Math.random() * 100}vw;
-            width: ${size}px;
-            height: ${size}px;
-            background: ${colors[Math.floor(Math.random() * colors.length)]};
-            border-radius: ${shapes[Math.floor(Math.random() * shapes.length)]};
-            animation-duration: ${2 + Math.random() * 3}s;
-            animation-delay: ${Math.random() * 2}s;
-        `;
-        container.appendChild(el);
+        el.className = 'floatie';
+        el.innerText = floatEmojis[i % floatEmojis.length];
+        el.style.cssText = `left:${Math.random()*100}vw; bottom:-60px; font-size:${0.9+Math.random()*1.4}rem; animation-duration:${8+Math.random()*12}s; animation-delay:${Math.random()*10}s;`;
+        scene.appendChild(el);
+    }
+
+    // Bolinhas coloridas
+    for (let i = 0; i < 14; i++) {
+        const b = document.createElement('div');
+        const size = 6 + Math.random() * 14;
+        b.style.cssText = `position:absolute; border-radius:50%; width:${size}px; height:${size}px; left:${Math.random()*100}vw; bottom:-20px; background:${bubbleColors[i%bubbleColors.length]}; opacity:0; animation:floatUp ${10+Math.random()*12}s linear ${Math.random()*10}s infinite;`;
+        scene.appendChild(b);
+    }
+
+    // Sparkles
+    for (let i = 0; i < 14; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        const size = 4 + Math.random() * 7;
+        s.style.cssText = `width:${size}px; height:${size}px; top:${Math.random()*90}vh; left:${Math.random()*100}vw; background:${sparkleColors[i%sparkleColors.length]}; animation-duration:${1.5+Math.random()*2.5}s; animation-delay:${Math.random()*3}s;`;
+        scene.appendChild(s);
     }
 </script>
 </body>
