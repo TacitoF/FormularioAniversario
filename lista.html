@@ -2,223 +2,788 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Obrigado pelo aviso! ❤️</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Convidados · Sofia 🎂</title>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink: #FF6EB4; --pink-light: #FFB3D9;
-            --purple: #C77DFF; --purple-deep: #7B2FBE; --text: #4A2060;
+            --bg-dark: #1a0d2e;
+            --card-bg: rgba(40, 20, 65, 0.85);
+            --border: rgba(199, 125, 255, 0.15);
+            --text-main: #f0e6ff;
+            --text-sub: #9B7BBF;
+            --confirmado: #90E0A0;
+            --ausente: #FF8FAB;
+            --pink: #FF6EB4;
+            --purple: #C77DFF;
+            --purple-deep: #9D4EDD;
+            --yellow: #FFD966;
         }
-        * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
 
         body {
-            font-family:'Nunito',sans-serif;
-            background:linear-gradient(180deg,#fce4f0 0%,#fdeef6 35%,#fff5fb 65%,#fff9fd 100%);
-            min-height:100vh; display:flex; justify-content:center; align-items:flex-start;
-            padding:20px; overflow-x:hidden; overflow-y:auto; -webkit-overflow-scrolling:touch; position:relative;
+            font-family: 'Nunito', sans-serif;
+            background: radial-gradient(ellipse at 25% 15%, #3d1580 0%, #1e0b4a 30%, #0d0020 70%, #06000f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            color: var(--text-main);
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            position: relative;
         }
 
-        .scene { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+        /* Nebulosas decorativas */
+        .nebula {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .nebula-1 { width:55vw; height:55vw; top:-10%; left:-10%; background:rgba(100,20,180,0.25); }
+        .nebula-2 { width:45vw; height:45vw; bottom:-5%; right:-5%; background:rgba(180,30,100,0.2); }
+        .nebula-3 { width:30vw; height:30vw; top:40%; left:40%; background:rgba(30,100,200,0.15); }
 
-        /* Arco-íris mais suave e rosado */
-        .bg-rainbow {
-            position:absolute; bottom:-10vw; left:50%; transform:translateX(-50%);
-            width:160vw; height:80vw; max-height:700px; border-radius:50% 50% 0 0;
-            background:transparent;
+        /* Estrelas de fundo */
+        .stars-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star-dot {
+            position: absolute;
+            border-radius: 50%;
+            background: white;
+            animation: twinkle ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50%       { opacity: 0.8; transform: scale(1.3); }
+        }
+
+        /* Container principal */
+        .container {
+            position: relative;
+            z-index: 10;
+            background: var(--card-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            width: 95%;
+            max-width: 500px;
+            height: 88vh;
+            border-radius: 30px;
+            border: 1px solid var(--border);
             box-shadow:
-                0 0 0 18px rgba(255,150,180,.15), 0 0 0 36px rgba(255,120,160,.12),
-                0 0 0 54px rgba(255,180,210,.12), 0 0 0 72px rgba(220,130,255,.11),
-                0 0 0 90px rgba(180,110,255,.10), 0 0 0 108px rgba(255,180,220,.09),
-                0 0 0 126px rgba(255,200,230,.08);
+                0 30px 80px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(199, 125, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .cloud {
-            position:absolute; background:white; border-radius:50px;
-            opacity:0; animation:cloudDrift linear infinite;
-            filter:drop-shadow(0 4px 12px rgba(255,180,210,0.3));
-        }
-        .cloud::before,.cloud::after { content:''; position:absolute; background:white; border-radius:50%; }
-        .cloud::before { width:55%; height:180%; top:-50%; left:12%; }
-        .cloud::after  { width:42%; height:150%; top:-35%; right:14%; }
-        .cloud-1 { width:160px; height:50px; top:8%;  animation-duration:28s; animation-delay:0s;   }
-        .cloud-2 { width:220px; height:65px; top:18%; animation-duration:38s; animation-delay:-10s; }
-        .cloud-3 { width:130px; height:42px; top:5%;  animation-duration:22s; animation-delay:-6s;  }
-        @keyframes cloudDrift {
-            0% { transform:translateX(-300px); opacity:0; } 5% { opacity:.8; }
-            95% { opacity:.8; } 100% { transform:translateX(calc(100vw + 300px)); opacity:0; }
+        /* Topo arco-íris */
+        .top-bar {
+            height: 6px;
+            background: linear-gradient(90deg,
+                #FF6B6B, #FFB347, #FFD700, #90EE90,
+                #74C7EC, #9B59B6, #FF69B4
+            );
+            flex-shrink: 0;
         }
 
-        .floatie { position:absolute; animation:floatUp linear infinite; opacity:0; }
-        @keyframes floatUp {
-            0% { transform:translateY(0) rotate(0deg); opacity:0; }
-            10% { opacity:.75; } 90% { opacity:.75; }
-            100% { transform:translateY(-110vh) rotate(15deg); opacity:0; }
+        /* Header */
+        .header {
+            padding: 22px 24px 16px;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--border);
         }
 
-        .sparkle { position:absolute; border-radius:50%; animation:sparklePop ease-in-out infinite; }
-        @keyframes sparklePop { 0%,100%{transform:scale(0);opacity:0;} 40%,60%{transform:scale(1);opacity:1;} }
-
-        /* Card */
-        .card-wrapper {
-            position:relative; z-index:10; width:100%; max-width:440px; margin:auto;
-            animation:slideUp 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards;
-        }
-        @keyframes slideUp { from{opacity:0;transform:translateY(40px) scale(0.92);} to{opacity:1;transform:translateY(0) scale(1);} }
-
-        .rainbow-bar {
-            height:10px;
-            background:linear-gradient(90deg,#FFB3D9,#FF6EB4,#C77DFF,#FFB3D9,#FF6EB4,#FFD966,#FFB3D9);
-            border-radius:20px 20px 0 0;
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
         }
 
-        .card {
-            background:rgba(255,255,255,0.93); backdrop-filter:blur(20px);
-            padding:32px 28px 38px; border-radius:0 0 30px 30px;
-            box-shadow:0 25px 50px rgba(255,110,180,0.2), 0 0 0 3px rgba(255,255,255,0.85);
-            text-align:center;
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Hero com foto emoldurada em rosa */
-        .hero {
-            position:relative; display:inline-flex;
-            align-items:center; justify-content:center; margin-bottom:16px;
+        .bear-icon {
+            font-size: 1.8rem;
+            animation: bearSway 3s ease-in-out infinite;
         }
 
-        .sofia-frame {
-            width:90px; height:90px; border-radius:50%; padding:3px;
-            background:linear-gradient(135deg,#FF6EB4,#FFB3D9,#C77DFF,#FF6EB4);
-            background-size:300% 300%;
-            animation:frameShimmer 5s ease infinite, heroFloat 4s ease-in-out infinite;
-            box-shadow:0 0 0 3px rgba(255,255,255,.95), 0 6px 20px rgba(255,110,180,0.4);
-            filter:grayscale(20%);
+        @keyframes bearSway {
+            0%, 100% { transform: rotate(-5deg); }
+            50%       { transform: rotate(5deg); }
+        }
+
+        /* Mini foto da Sofia no header */
+        .sofia-mini-frame {
+            width: 42px; height: 42px; border-radius: 50%; padding: 2px;
+            background: linear-gradient(135deg, #FF6EB4, #C77DFF, #FFD966, #FF6EB4);
+            background-size: 300% 300%;
+            animation: frameShimmer 4s ease infinite, bearSway 3s ease-in-out infinite;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.15), 0 4px 12px rgba(199,125,255,0.4);
+            flex-shrink: 0;
         }
         @keyframes frameShimmer { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
-        @keyframes heroFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
 
-        .sofia-frame img {
+        .sofia-mini-frame img {
             width:100%; height:100%; border-radius:50%;
             object-fit:cover; object-position:center 15%; display:block;
         }
 
-        /* Coração pulsando ao lado da foto */
-        .heart-badge {
-            position:absolute; bottom:0; right:-12px;
-            font-size:1.6rem;
-            animation:heartbeat 1.5s ease-in-out infinite;
-            filter:drop-shadow(0 2px 6px rgba(255,80,120,0.4));
-        }
-        @keyframes heartbeat {
-            0%,100%{transform:scale(1);}
-            14%{transform:scale(1.2);}
-            28%{transform:scale(1);}
-            42%{transform:scale(1.15);}
-            70%{transform:scale(1);}
-        }
-
         h1 {
-            font-family:'Fredoka One',cursive; color:var(--purple-deep);
-            font-size:1.9rem; margin-bottom:10px;
-            text-shadow:2px 2px 0 rgba(255,110,180,0.2);
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.4rem;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
         }
 
-        .message { color:#9B6BB5; font-size:.95rem; font-weight:600; line-height:1.65; margin-bottom:6px; }
-        .message-secondary { color:rgba(123,47,190,0.55); font-size:.88rem; font-weight:600; margin-bottom:28px; }
-
-        .divider { display:flex; align-items:center; gap:8px; margin:0 0 22px; color:var(--pink-light); }
-        .divider::before,.divider::after { content:''; flex:1; height:2px; background:linear-gradient(90deg,transparent,var(--pink-light),transparent); border-radius:2px; }
-
-        /* Card de mensagem especial */
-        .quote-box {
-            background:linear-gradient(135deg,rgba(255,110,180,0.07),rgba(199,125,255,0.07));
-            border:2px dashed rgba(255,110,180,0.3); border-radius:22px;
-            padding:22px 20px; margin-bottom:26px; position:relative; overflow:hidden;
+        .btn-refresh {
+            background: rgba(199, 125, 255, 0.15);
+            border: 1px solid rgba(199, 125, 255, 0.3);
+            color: var(--purple);
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
         }
-        .quote-box::before {
-            content:'💕'; position:absolute; font-size:5rem;
-            opacity:.06; right:-10px; bottom:-12px; pointer-events:none;
-        }
-        .quote-text {
-            font-family:'Fredoka One',cursive; font-size:1.05rem;
-            color:var(--purple-deep); line-height:1.6;
-        }
-        .quote-sub { font-size:.78rem; color:rgba(123,47,190,0.45); font-weight:600; margin-top:10px; }
 
-        /* Botão voltar */
-        .btn-voltar {
-            display:inline-flex; align-items:center; justify-content:center; gap:8px;
-            text-decoration:none; color:white;
-            background:linear-gradient(135deg,var(--purple-deep),var(--purple),var(--pink));
-            background-size:200% 200%; padding:15px 32px; border-radius:16px;
-            font-weight:800; font-size:.95rem; font-family:'Nunito',sans-serif;
-            transition:all .3s; box-shadow:0 6px 20px rgba(123,47,190,0.4);
-        }
-        .btn-voltar:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(123,47,190,0.5); }
-        .btn-voltar:active { transform:scale(.96); }
+        .btn-refresh:hover { background: rgba(199, 125, 255, 0.25); }
 
-        .card-footer { text-align:center; margin-top:22px; font-size:.75rem; color:rgba(123,47,190,0.4); font-weight:600; }
+        .spinning { animation: spin 0.8s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Estatísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat-card {
+            background: rgba(199, 125, 255, 0.08);
+            border: 1px solid rgba(199, 125, 255, 0.15);
+            border-radius: 14px;
+            padding: 12px 8px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-value {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.8rem;
+            line-height: 1;
+            margin-bottom: 3px;
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-sub);
+        }
+
+        .stat-confirmados .stat-value { color: var(--confirmado); }
+        .stat-ausentes .stat-value   { color: var(--ausente); }
+        .stat-total .stat-value      { color: var(--yellow); }
+
+        /* Barra de progresso de confirmados */
+        .progress-section {
+            margin-top: 14px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .progress-label {
+            font-size: 0.62rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+        }
+
+        .progress-pct {
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.85rem;
+            color: var(--confirmado);
+        }
+
+        .progress-track {
+            height: 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(199,125,255,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #57CC6B, #90E0A0, #FFD966);
+            background-size: 200% 100%;
+            animation: progressShimmer 2s linear infinite;
+            transition: width 1s cubic-bezier(0.34, 1.2, 0.64, 1);
+            width: 0%;
+        }
+
+        @keyframes progressShimmer {
+            0%   { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        /* Filtros */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            padding: 12px 24px;
+            flex-shrink: 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 10px;
+            border: 1.5px solid transparent;
+            background: rgba(255,255,255,0.04);
+            color: var(--text-sub);
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-btn.active-all    { background: rgba(199,125,255,0.15); border-color: rgba(199,125,255,0.4); color: var(--purple); }
+        .filter-btn.active-sim    { background: rgba(144,224,160,0.12); border-color: rgba(144,224,160,0.4); color: var(--confirmado); }
+        .filter-btn.active-nao    { background: rgba(255,143,171,0.12); border-color: rgba(255,143,171,0.4); color: var(--ausente); }
+
+        /* Lista */
+        .guest-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px 20px;
+        }
+
+        .guest-list::-webkit-scrollbar { width: 4px; }
+        .guest-list::-webkit-scrollbar-thumb { background: rgba(199,125,255,0.2); border-radius: 10px; }
+        .guest-list::-webkit-scrollbar-track { background: transparent; }
+
+        /* Loading */
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            height: 150px;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            width: 8px; height: 8px;
+            background: var(--purple);
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: loadDot 1.2s ease-in-out infinite;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes loadDot {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Guest card */
+        .guest-card {
+            background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 10px;
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            animation: cardIn 0.4s ease backwards;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+
+        .guest-card:hover { background: rgba(199, 125, 255, 0.06); border-color: rgba(199, 125, 255, 0.2); }
+
+        .guest-info { flex: 1; min-width: 0; }
+
+        .guest-name-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .guest-name {
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
+        .status-tag {
+            font-size: 0.58rem;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        .tag-sim { color: var(--confirmado); background: rgba(144,224,160,0.12); border: 1px solid rgba(144,224,160,0.25); }
+        .tag-nao { color: var(--ausente); background: rgba(255,143,171,0.12); border: 1px solid rgba(255,143,171,0.25); }
+
+        .bell-icon {
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .bell-active  { opacity: 1; filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.7)); }
+        .bell-inactive { opacity: 0.12; filter: grayscale(100%); }
+
+        .guest-sub {
+            font-size: 0.72rem;
+            color: var(--text-sub);
+            font-weight: 600;
+            line-height: 1.5;
+            margin-top: 2px;
+            word-break: break-word;
+        }
+
+        .guest-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .acomp-badge {
+            background: rgba(255, 217, 102, 0.15);
+            border: 1px solid rgba(255, 217, 102, 0.25);
+            color: var(--yellow);
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        .btn-delete {
+            background: rgba(255, 143, 171, 0.1);
+            border: 1px solid rgba(255, 143, 171, 0.2);
+            color: var(--ausente);
+            font-size: 0.9rem;
+            cursor: pointer;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            opacity: 0.5;
+        }
+
+        .btn-delete:hover { opacity: 1; background: rgba(255, 143, 171, 0.2); }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-sub);
+        }
+        .empty-state .empty-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+        .empty-state p { font-size: 0.9rem; font-weight: 600; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal {
+            background: #221040;
+            width: 88%;
+            max-width: 320px;
+            padding: 30px 25px;
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid rgba(199, 125, 255, 0.25);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            animation: modalIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes modalIn {
+            from { transform: scale(0.85); opacity: 0; }
+            to   { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-icon { font-size: 2.5rem; margin-bottom: 10px; display: block; }
+
+        .modal-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .modal-name {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            font-weight: 600;
+            margin-bottom: 22px;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .m-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .m-confirm {
+            background: linear-gradient(135deg, #FF6EB4, #FF4489);
+            color: white;
+        }
+
+        .m-cancel {
+            background: rgba(255,255,255,0.07);
+            color: var(--text-sub);
+            border: 1px solid var(--border);
+        }
+
+        .m-btn:hover { transform: translateY(-1px); }
+        .m-btn:active { transform: scale(0.97); }
+        .m-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     </style>
 </head>
 <body>
 
-<div class="scene" id="scene">
-    <div class="bg-rainbow"></div>
-    <div class="cloud cloud-1"></div>
-    <div class="cloud cloud-2"></div>
-    <div class="cloud cloud-3"></div>
+<div class="nebula nebula-1"></div>
+<div class="nebula nebula-2"></div>
+<div class="nebula nebula-3"></div>
+<div class="stars-bg" id="stars"></div>
+
+<div class="container">
+    <div class="top-bar"></div>
+
+    <div class="header">
+        <div class="header-row">
+            <div class="header-title">
+                <div class="sofia-mini-frame">
+                    <img src="sofia_card.jpeg" alt="Sofia">
+                </div>
+                <h1>Lista de Convidados</h1>
+            </div>
+            <button class="btn-refresh" id="btnRefresh" onclick="load()" title="Atualizar">↻</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card stat-confirmados">
+                <div class="stat-value" id="countConfirmados">—</div>
+                <div class="stat-label">Confirmados</div>
+            </div>
+            <div class="stat-card stat-ausentes">
+                <div class="stat-value" id="countAusentes">—</div>
+                <div class="stat-label">Ausentes</div>
+            </div>
+            <div class="stat-card stat-total">
+                <div class="stat-value" id="countTotal">—</div>
+                <div class="stat-label">Total Pessoas</div>
+            </div>
+        </div>
+
+        <!-- Barra de progresso -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span class="progress-label">✨ Taxa de confirmação</span>
+                <span class="progress-pct" id="progressPct">0%</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <button class="filter-btn active-all" id="filterAll" onclick="setFilter('all')">Todos</button>
+        <button class="filter-btn" id="filterSim" onclick="setFilter('sim')">✓ Confirmados</button>
+        <button class="filter-btn" id="filterNao" onclick="setFilter('nao')">✕ Ausentes</button>
+    </div>
+
+    <div class="guest-list" id="lista">
+        <div class="loading-state">
+            <div class="loading-dots">
+                <span></span><span></span><span></span>
+            </div>
+            <p>Sincronizando...</p>
+        </div>
+    </div>
 </div>
 
-<div class="card-wrapper">
-    <div class="rainbow-bar"></div>
-    <div class="card">
-
-        <div class="hero">
-            <div class="sofia-frame">
-                <img src="sofia_card.jpeg" alt="Sofia">
-            </div>
-            <span class="heart-badge">❤️</span>
+<!-- Modal de confirmação -->
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <span class="modal-icon">🗑️</span>
+        <div class="modal-title">Remover da lista?</div>
+        <div class="modal-name" id="modalInfo"></div>
+        <div class="modal-btns">
+            <button class="m-btn m-cancel" onclick="closeModal()">Cancelar</button>
+            <button class="m-btn m-confirm" id="confirmDelete">Excluir</button>
         </div>
-
-        <h1>Obrigado pelo aviso!</h1>
-        <p class="message">Uma pena que não poderá vir,<br>mas agradecemos muito por nos avisar.</p>
-        <p class="message-secondary">Sentiremos sua falta! 🥺</p>
-
-        <div class="divider">🌸</div>
-
-        <div class="quote-box">
-            <div class="quote-text">
-                "Cada coração importa para nós.<br>
-                O seu com certeza já foi celebrado! 🌈"
-            </div>
-            <div class="quote-sub">— Família da Sofia 🐻</div>
-        </div>
-
-        <a href="index.html" class="btn-voltar">← Voltar ao início</a>
-
-        <div class="card-footer">🌟 Sofia faz 5 anos · 17 de Julho de 2026 🌟</div>
     </div>
 </div>
 
 <script>
-    const scene = document.getElementById('scene');
-    const heartEmojis = ['❤️','💕','💗','💖','💝','🩷','💜','🌸'];
-    const sparkleColors = ['#FFD966','#FF6EB4','#C77DFF','#FF8FAB'];
+    const URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
+    let targetID = "";
+    let currentFilter = 'all';
+    let allGuests = [];
 
-    for (let i = 0; i < 16; i++) {
-        const el = document.createElement('div');
-        el.className = 'floatie';
-        el.innerText = heartEmojis[i % heartEmojis.length];
-        el.style.cssText = `left:${Math.random()*100}vw; bottom:-60px; font-size:${0.9+Math.random()*1.3}rem; animation-duration:${9+Math.random()*12}s; animation-delay:${Math.random()*10}s;`;
-        scene.appendChild(el);
+    // Conta acompanhantes: se for número usa direto, se for nomes separados por vírgula conta os nomes
+    function contarAcomp(val) {
+        if (!val || val === '0') return 0;
+        const num = parseInt(val);
+        if (!isNaN(num) && String(num) === String(val).trim()) return num;
+        return val.split(',').map(s => s.trim()).filter(s => s).length;
     }
 
-    for (let i = 0; i < 12; i++) {
+    // Estrelas de fundo
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 60; i++) {
         const s = document.createElement('div');
-        s.className = 'sparkle';
-        const size = 4 + Math.random() * 7;
-        s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*90}vh;left:${Math.random()*100}vw;background:${sparkleColors[i%4]};animation-duration:${1.5+Math.random()*2.5}s;animation-delay:${Math.random()*3}s;`;
-        scene.appendChild(s);
+        s.className = 'star-dot';
+        const size = 1 + Math.random() * 2.5;
+        s.style.cssText = `
+            width: ${size}px; height: ${size}px;
+            top: ${Math.random() * 100}vh;
+            left: ${Math.random() * 100}vw;
+            animation-duration: ${2 + Math.random() * 3}s;
+            animation-delay: ${Math.random() * 3}s;
+        `;
+        starsContainer.appendChild(s);
     }
+
+    function setFilter(filter) {
+        currentFilter = filter;
+        document.getElementById('filterAll').className = 'filter-btn' + (filter === 'all' ? ' active-all' : '');
+        document.getElementById('filterSim').className = 'filter-btn' + (filter === 'sim' ? ' active-sim' : '');
+        document.getElementById('filterNao').className = 'filter-btn' + (filter === 'nao' ? ' active-nao' : '');
+        renderList(allGuests);
+    }
+
+    function renderList(data) {
+        const filtered = data.filter(g => {
+            if (currentFilter === 'sim') return g.presenca === 'Sim';
+            if (currentFilter === 'nao') return g.presenca === 'Não';
+            return true;
+        });
+
+        if (filtered.length === 0) {
+            document.getElementById('lista').innerHTML = `
+                <div class="empty-state">
+                    <span class="empty-icon">🐻</span>
+                    <p>Nenhum convidado aqui ainda...</p>
+                </div>`;
+            return;
+        }
+
+        document.getElementById('lista').innerHTML = filtered.map((g, i) => `
+            <div class="guest-card" data-id="${g.id}" style="animation-delay: ${i * 0.04}s">
+                <div class="guest-info">
+                    <div class="guest-name-row">
+                        <span class="guest-name">${g.nome}</span>
+                        <span class="status-tag ${g.presenca === 'Sim' ? 'tag-sim' : 'tag-nao'}">
+                            ${g.presenca === 'Sim' ? 'CONFIRMADO' : 'NÃO VAI'}
+                        </span>
+                        ${g.presenca === 'Sim' ? `
+                        <span class="bell-icon ${g.lembrete ? 'bell-active' : 'bell-inactive'}" title="${g.lembrete ? 'Lembrete ativo' : 'Sem lembrete'}">🔔</span>` : ''}
+                    </div>
+                    <div class="guest-sub acompanhantes-label" data-acomp="${g.acompanhantes || ''}">
+                        ${g.presenca === 'Sim'
+                            ? (g.acompanhantes && g.acompanhantes !== '0'
+                                ? `👨‍👩‍👧 ${g.acompanhantes}`
+                                : '👤 Sem acompanhantes')
+                            : '📩 Ausência justificada'}
+                    </div>
+                </div>
+                <div class="guest-actions">
+                    ${g.presenca === 'Sim' && g.acompanhantes && g.acompanhantes !== '0'
+                        ? `<span class="acomp-badge">+${contarAcomp(g.acompanhantes)}</span>`
+                        : ''}
+                    <button class="btn-delete" onclick="openModal('${g.nome.replace(/'/g, "\\'")}', '${g.id}')" title="Remover">✕</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Anima contadores do 0 até o valor final
+    function animateCount(el, target, duration = 800) {
+        const start = performance.now();
+        const from = parseInt(el.innerText) || 0;
+        function step(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+            el.innerText = Math.round(from + (target - from) * ease);
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    async function load() {
+        const btn = document.getElementById('btnRefresh');
+        btn.classList.add('spinning');
+
+        try {
+            const res = await fetch(URL);
+            allGuests = await res.json();
+
+            const confirmados = allGuests.filter(g => g.presenca === 'Sim').length;
+            const ausentes = allGuests.filter(g => g.presenca === 'Não').length;
+            const total = allGuests.reduce((acc, g) => g.presenca === 'Sim' ? acc + 1 + contarAcomp(g.acompanhantes) : acc, 0);
+
+            animateCount(document.getElementById('countConfirmados'), confirmados);
+            animateCount(document.getElementById('countAusentes'), ausentes);
+            animateCount(document.getElementById('countTotal'), total);
+
+            // Barra de progresso
+            const totalRespostas = confirmados + ausentes;
+            const pct = totalRespostas > 0 ? Math.round((confirmados / totalRespostas) * 100) : 0;
+            setTimeout(() => {
+                document.getElementById('progressFill').style.width = pct + '%';
+                document.getElementById('progressPct').innerText = pct + '%';
+            }, 200);
+
+            renderList(allGuests);
+        } catch (e) {
+            document.getElementById('lista').innerHTML = `
+                <div class="empty-state">
+                    <span class="empty-icon">⚠️</span>
+                    <p>Erro ao carregar. Tente novamente.</p>
+                </div>`;
+        } finally {
+            btn.classList.remove('spinning');
+        }
+    }
+
+    function openModal(nome, id) {
+        targetID = id;
+        document.getElementById('modalInfo').innerText = nome;
+        const btn = document.getElementById('confirmDelete');
+        btn.innerText = "Excluir";
+        btn.disabled = false;
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    document.getElementById('confirmDelete').onclick = () => {
+        const btn = document.getElementById('confirmDelete');
+        const idParaRemover = targetID;
+
+        btn.innerText = "Removendo...";
+        btn.disabled = true;
+
+        fetch(URL, {
+            method: 'POST',
+            body: JSON.stringify({ action: 'delete', id: idParaRemover })
+        });
+
+        setTimeout(() => {
+            closeModal();
+            const card = document.querySelector(`[data-id="${idParaRemover}"]`);
+            if (card) {
+                const countConvEl = document.getElementById('countConfirmados');
+                const countAusEl  = document.getElementById('countAusentes');
+                const countTotEl  = document.getElementById('countTotal');
+
+                const acompVal  = card.querySelector('.acompanhantes-label').dataset.acomp || '';
+                const acompQtd  = contarAcomp(acompVal);
+                const isConf    = card.querySelector('.tag-sim') !== null;
+
+                if (isConf) {
+                    countConvEl.innerText = Math.max(0, parseInt(countConvEl.innerText) - 1);
+                    countTotEl.innerText  = Math.max(0, parseInt(countTotEl.innerText) - (1 + acompQtd));
+                } else {
+                    countAusEl.innerText = Math.max(0, parseInt(countAusEl.innerText) - 1);
+                }
+
+                card.style.opacity = '0';
+                card.style.transform = 'translateX(30px)';
+                setTimeout(() => {
+                    card.remove();
+                    allGuests = allGuests.filter(g => String(g.id) !== String(idParaRemover));
+                    setTimeout(load, 5000);
+                }, 400);
+            }
+        }, 300);
+    };
+
+    load();
 </script>
 </body>
 </html>
