@@ -5,92 +5,250 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Confirme sua presença 🎂</title>
     <link rel="icon" type="image/png" href="icone.png">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #8e44ad;
-            --secondary: #9b59b6;
-            --bg: #f3e5f5;
-            --text: #2f3640;
+            --pink: #FF6EB4;
+            --pink-light: #FFB3D9;
+            --purple: #C77DFF;
+            --purple-deep: #7B2FBE;
+            --blue: #74C7EC;
+            --yellow: #FFD966;
+            --green: #90E0A0;
+            --white: #FFFFFF;
+            --text: #4A2060;
+            --card-bg: rgba(255, 255, 255, 0.92);
         }
 
-        /* Animações */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeOutDown {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(20px); }
-        }
-
-        .fade-out {
-            animation: fadeOutDown 0.5s ease-in forwards;
-            pointer-events: none;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg);
+            font-family: 'Nunito', sans-serif;
+            background-color: #c9eeff;
             background-image: url('fundo2.png');
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-position: center;
-            background-size: auto;
-            margin: 0;
-            padding: 20px;
+            background-size: cover;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            transition: background 0.5s;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Elementos decorativos flutuantes */
+        .floaties {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .star {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: floatStar linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes floatStar {
+            0%   { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10%  { opacity: 0.7; }
+            90%  { opacity: 0.7; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Nuvens decorativas */
+        .cloud {
+            position: fixed;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50px;
+            animation: driftCloud linear infinite;
+        }
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: rgba(255,255,255,0.6);
+            border-radius: 50%;
+        }
+        .cloud::before { width: 50%; height: 150%; top: -40%; left: 15%; }
+        .cloud::after  { width: 40%; height: 130%; top: -30%; right: 15%; }
+
+        @keyframes driftCloud {
+            from { transform: translateX(-200px); }
+            to   { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        /* Card principal */
+        .card-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 460px;
+            animation: bounceIn 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes bounceIn {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Arco-íris decorativo no topo */
+        .rainbow-bar {
+            height: 10px;
+            background: linear-gradient(90deg,
+                #FF6B6B, #FFB347, #FFD700, #90EE90,
+                #74C7EC, #9B59B6, #FF69B4
+            );
+            border-radius: 20px 20px 0 0;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(12px); 
-            width: 100%;
-            max-width: 450px;
-            padding: 30px 25px;
-            border-radius: 28px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-            animation: fadeInUp 0.8s ease-out forwards;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 30px 28px 35px;
+            border-radius: 0 0 30px 30px;
+            box-shadow:
+                0 25px 50px rgba(123, 47, 190, 0.2),
+                0 0 0 3px rgba(255, 255, 255, 0.8);
         }
 
-        h1 { color: var(--primary); text-align: center; margin: 0 0 10px 0; }
-        p.subtitle { text-align: center; color: #636e72; margin-bottom: 25px; }
+        /* Header do card */
+        .card-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
 
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); }
+        .bear-emoji {
+            font-size: 3.5rem;
+            display: block;
+            animation: bearBounce 2s ease-in-out infinite;
+            margin-bottom: 5px;
+        }
 
-        input, select {
+        @keyframes bearBounce {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50%       { transform: translateY(-8px) rotate(3deg); }
+        }
+
+        .card-header h1 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--purple-deep);
+            font-size: 2rem;
+            line-height: 1.1;
+            text-shadow: 2px 2px 0 rgba(199, 125, 255, 0.3);
+        }
+
+        .card-header h1 span {
+            color: var(--pink);
+        }
+
+        .subtitle {
+            color: #9B6BB5;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: 6px;
+        }
+
+        /* Divisor fofo */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 20px 0;
+            color: var(--pink-light);
+            font-size: 1.1rem;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--pink-light), transparent);
+            border-radius: 2px;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 800;
+            color: var(--text);
+            font-size: 0.9rem;
+            letter-spacing: 0.3px;
+        }
+
+        label .label-icon {
+            margin-right: 5px;
+        }
+
+        select, input[type="text"], input[type="email"], input[type="number"] {
             width: 100%;
-            height: 52px; 
-            padding: 12px 15px;
-            border: 2px solid rgba(142, 68, 173, 0.1);
-            border-radius: 14px;
+            height: 54px;
+            padding: 0 18px;
+            border: 2.5px solid rgba(199, 125, 255, 0.25);
+            border-radius: 16px;
             font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 600;
             outline: none;
             background: rgba(255, 255, 255, 0.9);
+            color: var(--text);
+            transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
         }
 
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath fill='%239B6BB5' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 44px;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 4px rgba(199, 125, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        select.selected-sim { border-color: var(--green); background-color: rgba(144, 224, 160, 0.08); }
+        select.selected-nao { border-color: var(--pink); background-color: rgba(255, 110, 180, 0.08); }
+
+        /* Toggle do lembrete */
         .switch-group {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(142, 68, 173, 0.05);
-            padding: 15px;
-            border-radius: 14px;
-            margin: 10px 0 18px 0;
+            background: linear-gradient(135deg, rgba(199, 125, 255, 0.08), rgba(255, 110, 180, 0.08));
+            padding: 16px 18px;
+            border-radius: 16px;
+            margin: 8px 0 18px 0;
+            border: 2px dashed rgba(199, 125, 255, 0.3);
+        }
+
+        .switch-label {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .switch {
             position: relative;
             display: inline-block;
-            width: 50px;
-            height: 26px;
+            width: 54px;
+            height: 28px;
+            flex-shrink: 0;
         }
 
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -99,116 +257,287 @@
             position: absolute;
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
+            background: #ddd;
+            transition: .4s cubic-bezier(0.34, 1.56, 0.64, 1);
             border-radius: 34px;
         }
 
         .slider:before {
             position: absolute;
-            content: "";
-            height: 18px; width: 18px;
-            left: 4px; bottom: 4px;
-            background-color: white;
-            transition: .4s;
+            content: "🔕";
+            font-size: 14px;
+            line-height: 20px;
+            text-align: center;
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background: white;
+            transition: .4s cubic-bezier(0.34, 1.56, 0.64, 1);
             border-radius: 50%;
         }
 
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(24px); }
+        input:checked + .slider { background: linear-gradient(135deg, var(--purple), var(--pink)); }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+            content: "🔔";
+        }
 
-        button {
+        /* Mensagem negativa */
+        #mensagemNegativa {
+            background: linear-gradient(135deg, rgba(255,110,180,0.1), rgba(199,125,255,0.1));
+            border: 2px dashed var(--pink-light);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            color: var(--purple-deep);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+
+        /* Botão principal */
+        .btn-submit {
             width: 100%;
-            height: 55px;
-            background: var(--primary);
+            height: 58px;
+            background: linear-gradient(135deg, var(--purple-deep), var(--purple), var(--pink));
+            background-size: 200% 200%;
             color: white;
             border: none;
-            border-radius: 14px;
+            border-radius: 18px;
             font-size: 1.1rem;
-            font-weight: bold;
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
             cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s ease;
+            margin-top: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(123, 47, 190, 0.4);
+            letter-spacing: 0.5px;
+            animation: gradientShift 3s ease infinite;
+            position: relative;
+            overflow: hidden;
         }
 
-        button:active { transform: scale(0.98); }
-        button:disabled { background: #ccc; cursor: not-allowed; }
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -60%;
+            width: 40%; height: 200%;
+            background: rgba(255,255,255,0.2);
+            transform: skewX(-20deg);
+            transition: left 0.5s;
+        }
+        .btn-submit:hover::after { left: 130%; }
+
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(123, 47, 190, 0.5); }
+        .btn-submit:active { transform: scale(0.97); }
+        .btn-submit:disabled { background: linear-gradient(135deg, #ccc, #bbb); box-shadow: none; cursor: not-allowed; transform: none; }
+
+        /* Acompanhantes dinâmicos */
+        .acomp-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            animation: fadeSlideIn 0.3s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .acomp-item input {
+            flex: 1;
+            height: 48px;
+            font-size: 15px;
+        }
+
+        .acomp-num {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--purple);
+            background: rgba(199, 125, 255, 0.12);
+            border: 1.5px solid rgba(199, 125, 255, 0.25);
+            border-radius: 10px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .btn-remove-acomp {
+            background: rgba(255, 110, 180, 0.1);
+            border: 1.5px solid rgba(255, 110, 180, 0.25);
+            color: var(--pink);
+            border-radius: 10px;
+            width: 34px;
+            height: 34px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .btn-remove-acomp:hover { background: rgba(255, 110, 180, 0.2); }
+
+        #btnAddAcomp {
+            width: 100%;
+            height: 44px;
+            background: rgba(199, 125, 255, 0.08);
+            color: var(--purple-deep);
+            border: 2px dashed rgba(199, 125, 255, 0.35);
+            border-radius: 14px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: all 0.2s;
+        }
+        #btnAddAcomp:hover { background: rgba(199, 125, 255, 0.15); border-color: var(--purple); }
 
         .hidden { display: none !important; }
-        
-        #mensagemNegativa {
-            background-color: rgba(142, 68, 173, 0.1);
-            color: var(--primary);
-            padding: 15px;
-            border-radius: 12px;
+
+        #status {
+            margin-top: 12px;
             text-align: center;
-            margin-bottom: 20px;
+            font-weight: 700;
+            color: var(--purple-deep);
+            min-height: 24px;
             font-size: 0.9rem;
-            line-height: 1.4;
         }
 
-        #status { margin-top: 15px; text-align: center; font-weight: 600; min-height: 24px; }
+        /* Animações de saída */
+        @keyframes fadeOutDown {
+            from { opacity: 1; transform: scale(1); }
+            to   { opacity: 0; transform: scale(0.95) translateY(20px); }
+        }
+        .fade-out { animation: fadeOutDown 0.5s ease-in forwards; pointer-events: none; }
+
+        /* Footer fofo */
+        .card-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.78rem;
+            color: rgba(123, 47, 190, 0.5);
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
 
-<div class="card" id="mainCard">
-    <h1>Aniversário de Sofia</h1>
-    <p class="subtitle">Confirme sua presença abaixo! ✨</p>
+<!-- Floaties decorativos -->
+<div class="floaties" id="floaties"></div>
 
-    <form id="rsvpForm">
-        <div class="form-group">
-            <label for="presenca">Você vem?</label>
-            <select id="presenca" required>
-                <option value="" disabled selected>Selecione uma opção</option>
-                <option value="Sim">Sim, estarei lá!</option>
-                <option value="Não">Infelizmente não vou conseguir</option>
-            </select>
+<div class="card-wrapper" id="cardWrapper">
+    <div class="rainbow-bar"></div>
+    <div class="card">
+        <div class="card-header">
+            <span class="bear-emoji">🐻‍❄️</span>
+            <h1>Aniversário de <span>Sofia!</span></h1>
+            <p class="subtitle">Confirme sua presença abaixo ✨</p>
         </div>
 
-        <div id="camposExtras" class="hidden">
-            
-            <div id="mensagemNegativa" class="hidden">
-                Que pena! Mas obrigado por avisar. ❤️<br>Por favor, deixe seu nome abaixo para sabermos quem respondeu.
-            </div>
+        <div class="divider">🌈</div>
 
+        <form id="rsvpForm">
             <div class="form-group">
-                <label for="nome">Qual o seu nome?</label>
-                <input type="text" id="nome" placeholder="Seu nome completo">
+                <label for="presenca"><span class="label-icon">🎉</span> Você vem?</label>
+                <select id="presenca" required>
+                    <option value="" disabled selected>Selecione uma opção</option>
+                    <option value="Sim">Sim, estarei lá! 🎈</option>
+                    <option value="Não">Infelizmente não vou conseguir 😢</option>
+                </select>
             </div>
 
-            <div id="camposOpcionais">
+            <div id="camposExtras" class="hidden">
+
+                <div id="mensagemNegativa" class="hidden">
+                    Que pena! Mas obrigado por avisar. ❤️<br>
+                    Por favor, deixe seu nome para sabermos quem respondeu.
+                </div>
+
                 <div class="form-group">
-                    <label for="acompanhantes">Quantos acompanhantes?</label>
-                    <input type="number" id="acompanhantes" placeholder="0" min="0" max="10" inputmode="numeric">
+                    <label for="nome"><span class="label-icon">😊</span> Qual o seu nome?</label>
+                    <input type="text" id="nome" placeholder="Seu nome completo">
                 </div>
 
-                <div class="switch-group">
-                    <span style="font-size: 0.9rem; color: var(--text); font-weight: 600;">Me lembre 1 semana e 1 dia antes 🔔</span>
-                    <label class="switch">
-                        <input type="checkbox" id="lembrete">
-                        <span class="slider"></span>
-                    </label>
+                <div id="camposOpcionais">
+                    <div class="form-group">
+                        <label><span class="label-icon">👨‍👩‍👧</span> Acompanhantes</label>
+                        <div id="listaAcompanhantes"></div>
+                        <button type="button" id="btnAddAcomp" onclick="adicionarAcompanhante()">+ Adicionar acompanhante</button>
+                    </div>
+
+                    <div class="switch-group">
+                        <span class="switch-label">
+                            Me lembre 1 semana e 1 dia antes!
+                        </span>
+                        <label class="switch">
+                            <input type="checkbox" id="lembrete">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div id="grupoEmail" class="form-group hidden">
+                        <label for="email"><span class="label-icon">📧</span> Seu E-mail</label>
+                        <input type="email" id="email" placeholder="Para receber o lembrete">
+                    </div>
                 </div>
 
-                <div id="grupoEmail" class="form-group hidden">
-                    <label for="email">Seu E-mail</label>
-                    <input type="email" id="email" placeholder="Para receber o lembrete">
-                </div>
+                <button type="submit" class="btn-submit" id="btnEnviar">Enviar Confirmação 🎀</button>
             </div>
+        </form>
 
-            <button type="submit" id="btnEnviar">Enviar Confirmação</button>
-        </div>
-    </form>
-    
-    <div id="status"></div>
+        <div id="status"></div>
+
+        <div class="card-footer">🌟 Sofia faz 5 anos · 17 de Julho de 2026 🌟</div>
+    </div>
 </div>
 
 <script>
+    // Floaties animados
+    const floatItems = ['⭐', '✨', '🌟', '💫', '🎀', '🌈', '💕', '🎈', '🌸', '💜'];
+    const floaties = document.getElementById('floaties');
+    for (let i = 0; i < 15; i++) {
+        const el = document.createElement('div');
+        el.className = 'star';
+        el.innerText = floatItems[Math.floor(Math.random() * floatItems.length)];
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.animationDuration = (8 + Math.random() * 12) + 's';
+        el.style.animationDelay = (Math.random() * 10) + 's';
+        el.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+        floaties.appendChild(el);
+    }
+
+    // Nuvens
+    for (let i = 0; i < 3; i++) {
+        const c = document.createElement('div');
+        c.className = 'cloud';
+        c.style.width = (80 + Math.random() * 80) + 'px';
+        c.style.height = (30 + Math.random() * 20) + 'px';
+        c.style.top = (10 + Math.random() * 30) + 'vh';
+        c.style.animationDuration = (30 + Math.random() * 20) + 's';
+        c.style.animationDelay = (Math.random() * 20) + 's';
+        floaties.appendChild(c);
+    }
+
     const form = document.getElementById('rsvpForm');
     const status = document.getElementById('status');
     const btn = document.getElementById('btnEnviar');
-    const card = document.getElementById('mainCard');
+    const cardWrapper = document.getElementById('cardWrapper');
     const selectPresenca = document.getElementById('presenca');
     const camposExtras = document.getElementById('camposExtras');
     const camposOpcionais = document.getElementById('camposOpcionais');
@@ -216,49 +545,75 @@
     const inputNome = document.getElementById('nome');
     const inputEmail = document.getElementById('email');
     const grupoEmail = document.getElementById('grupoEmail');
-    const inputAcompanhantes = document.getElementById('acompanhantes');
     const checkLembrete = document.getElementById('lembrete');
+    let contadorAcomp = 0;
 
-    window.addEventListener("pageshow", function (event) {
+    function adicionarAcompanhante() {
+        contadorAcomp++;
+        const lista = document.getElementById('listaAcompanhantes');
+        const div = document.createElement('div');
+        div.className = 'acomp-item';
+        div.dataset.index = contadorAcomp;
+        div.innerHTML = `
+            <span class="acomp-num">${contadorAcomp}</span>
+            <input type="text" placeholder="Nome do acompanhante" class="input-acomp" required>
+            <button type="button" class="btn-remove-acomp" onclick="removerAcompanhante(this)" title="Remover">✕</button>
+        `;
+        lista.appendChild(div);
+        div.querySelector('input').focus();
+        atualizarNumeracao();
+    }
+
+    function removerAcompanhante(btn) {
+        btn.closest('.acomp-item').remove();
+        atualizarNumeracao();
+    }
+
+    function atualizarNumeracao() {
+        document.querySelectorAll('.acomp-item').forEach((el, i) => {
+            el.querySelector('.acomp-num').innerText = i + 1;
+        });
+    }
+
+    window.adicionarAcompanhante = adicionarAcompanhante;
+    window.removerAcompanhante = removerAcompanhante;
+
+    window.addEventListener("pageshow", function(event) {
         if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
-            card.classList.remove('fade-out');
+            cardWrapper.classList.remove('fade-out');
             form.reset();
             camposExtras.classList.add('hidden');
+            document.getElementById('listaAcompanhantes').innerHTML = '';
+            contadorAcomp = 0;
             status.innerText = "";
             btn.disabled = false;
-            btn.innerText = "Enviar Confirmação";
+            btn.innerText = "Enviar Confirmação 🎀";
+            selectPresenca.className = '';
         }
     });
 
-    function limparStatus() { status.innerText = ""; }
-
-    inputAcompanhantes.addEventListener('input', function() {
-        limparStatus();
-        this.value = this.value.replace(/[^0-9]/g, '');
-    });
-
     selectPresenca.addEventListener('change', function() {
-        limparStatus();
+        status.innerText = "";
         const vaiAoEvento = this.value === "Sim";
-        
+        this.className = vaiAoEvento ? 'selected-sim' : 'selected-nao';
+
         camposExtras.classList.remove('hidden');
-        inputNome.required = true; 
+        inputNome.required = true;
 
         if (vaiAoEvento) {
             camposOpcionais.classList.remove('hidden');
             mensagemNegativa.classList.add('hidden');
-            btn.innerText = "Enviar Confirmação";
+            btn.innerText = "Enviar Confirmação 🎀";
         } else {
             camposOpcionais.classList.add('hidden');
             mensagemNegativa.classList.remove('hidden');
-            
-            inputAcompanhantes.value = "";
+            document.getElementById('listaAcompanhantes').innerHTML = '';
+            contadorAcomp = 0;
             checkLembrete.checked = false;
             inputEmail.value = "";
             grupoEmail.classList.add('hidden');
             inputEmail.required = false;
-            
-            btn.innerText = "Confirmar Ausência";
+            btn.innerText = "Confirmar Ausência 💌";
         }
     });
 
@@ -269,22 +624,25 @@
         } else {
             grupoEmail.classList.add('hidden');
             inputEmail.required = false;
-            inputEmail.value = ""; 
+            inputEmail.value = "";
         }
     });
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
         btn.disabled = true;
-        btn.innerText = "Registrando...";
-        card.classList.add('fade-out');
+        btn.innerText = "Enviando... 💫";
+        cardWrapper.classList.add('fade-out');
+
+        const nomesAcomp = Array.from(document.querySelectorAll('.input-acomp'))
+            .map(i => i.value.trim())
+            .filter(v => v);
 
         const dados = {
             nome: inputNome.value,
             email: inputEmail.value || "Não informado",
             presenca: selectPresenca.value,
-            acompanhantes: inputAcompanhantes.value || 0,
+            acompanhantes: nomesAcomp.length > 0 ? nomesAcomp.join(', ') : '0',
             lembrete: checkLembrete.checked,
             id: Date.now().toString()
         };
@@ -293,7 +651,7 @@
 
         fetch(APPS_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors', 
+            mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dados)
         });
