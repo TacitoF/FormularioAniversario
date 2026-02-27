@@ -185,16 +185,63 @@
             margin-bottom: 28px;
         }
 
-        .bear-emoji {
-            font-size: 3.5rem;
-            display: block;
-            animation: bearBounce 2s ease-in-out infinite;
-            margin-bottom: 5px;
+        /* Foto da Sofia */
+        .sofia-photo-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 14px;
         }
 
-        @keyframes bearBounce {
-            0%, 100% { transform: translateY(0) rotate(-3deg); }
-            50%       { transform: translateY(-8px) rotate(3deg); }
+        /* Moldura circular com gradiente */
+        .sofia-photo-frame {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(135deg, #FF6EB4, #C77DFF, #74C7EC, #FFD966, #FF6EB4);
+            background-size: 300% 300%;
+            animation: frameShimmer 4s ease infinite;
+            box-shadow:
+                0 8px 25px rgba(199, 125, 255, 0.45),
+                0 0 0 3px rgba(255,255,255,0.9);
+            display: inline-block;
+        }
+
+        @keyframes frameShimmer {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .sofia-photo-frame img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center 15%;
+            display: block;
+        }
+
+        /* Estrelinhas ao redor da foto */
+        .sofia-photo-wrapper::before {
+            content: '✨';
+            position: absolute;
+            top: -6px; right: -4px;
+            font-size: 1.3rem;
+            animation: starSpin 3s ease-in-out infinite;
+        }
+
+        .sofia-photo-wrapper::after {
+            content: '🌟';
+            position: absolute;
+            bottom: 4px; left: -8px;
+            font-size: 1.1rem;
+            animation: starSpin 3s ease-in-out infinite reverse;
+        }
+
+        @keyframes starSpin {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50%       { transform: scale(1.3) rotate(20deg); }
         }
 
         .card-header h1 {
@@ -515,7 +562,11 @@
     <div class="rainbow-bar"></div>
     <div class="card">
         <div class="card-header">
-            <span class="bear-emoji">🐻‍❄️</span>
+            <div class="sofia-photo-wrapper">
+                <div class="sofia-photo-frame">
+                    <img src="sofia_card.jpeg" alt="Sofia">
+                </div>
+            </div>
             <h1>Aniversário de <span>Sofia!</span></h1>
             <p class="subtitle">Confirme sua presença abaixo ✨</p>
         </div>
