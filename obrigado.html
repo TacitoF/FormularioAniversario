@@ -7,240 +7,156 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --pink: #FF6EB4;
-            --pink-light: #FFB3D9;
-            --purple: #C77DFF;
-            --purple-deep: #7B2FBE;
-            --text: #4A2060;
+            --pink: #FF6EB4; --pink-light: #FFB3D9;
+            --purple: #C77DFF; --purple-deep: #7B2FBE; --text: #4A2060;
         }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
 
         body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(180deg,
-                #a8d8f8 0%,
-                #c5e8ff 35%,
-                #ddf2ff 60%,
-                #eef8ff 80%,
-                #f8fdff 100%
-            );
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow: hidden;
-            position: relative;
+            font-family:'Nunito',sans-serif;
+            background:linear-gradient(180deg,#fce4f0 0%,#fdeef6 35%,#fff5fb 65%,#fff9fd 100%);
+            min-height:100vh; display:flex; justify-content:center; align-items:center;
+            padding:20px; overflow:hidden; position:relative;
         }
 
-        .scene {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
+        .scene { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
 
+        /* Arco-íris mais suave e rosado */
         .bg-rainbow {
-            position: absolute;
-            bottom: -10vw; left: 50%;
-            transform: translateX(-50%);
-            width: 160vw; height: 80vw; max-height: 700px;
-            border-radius: 50% 50% 0 0;
-            background: transparent;
+            position:absolute; bottom:-10vw; left:50%; transform:translateX(-50%);
+            width:160vw; height:80vw; max-height:700px; border-radius:50% 50% 0 0;
+            background:transparent;
             box-shadow:
-                0 0 0 18px rgba(255,80,80,.18),
-                0 0 0 36px rgba(255,165,0,.15),
-                0 0 0 54px rgba(255,220,0,.14),
-                0 0 0 72px rgba(100,210,80,.13),
-                0 0 0 90px rgba(60,160,240,.12),
-                0 0 0 108px rgba(140,80,220,.11),
-                0 0 0 126px rgba(255,110,180,.10);
+                0 0 0 18px rgba(255,150,180,.15), 0 0 0 36px rgba(255,120,160,.12),
+                0 0 0 54px rgba(255,180,210,.12), 0 0 0 72px rgba(220,130,255,.11),
+                0 0 0 90px rgba(180,110,255,.10), 0 0 0 108px rgba(255,180,220,.09),
+                0 0 0 126px rgba(255,200,230,.08);
         }
 
         .cloud {
-            position: absolute;
-            background: white;
-            border-radius: 50px;
-            opacity: 0;
-            animation: cloudDrift linear infinite;
-            filter: drop-shadow(0 4px 12px rgba(180,220,255,0.4));
+            position:absolute; background:white; border-radius:50px;
+            opacity:0; animation:cloudDrift linear infinite;
+            filter:drop-shadow(0 4px 12px rgba(255,180,210,0.3));
         }
-        .cloud::before, .cloud::after { content:''; position:absolute; background:white; border-radius:50%; }
+        .cloud::before,.cloud::after { content:''; position:absolute; background:white; border-radius:50%; }
         .cloud::before { width:55%; height:180%; top:-50%; left:12%; }
         .cloud::after  { width:42%; height:150%; top:-35%; right:14%; }
         .cloud-1 { width:160px; height:50px; top:8%;  animation-duration:28s; animation-delay:0s;   }
         .cloud-2 { width:220px; height:65px; top:18%; animation-duration:38s; animation-delay:-10s; }
         .cloud-3 { width:130px; height:42px; top:5%;  animation-duration:22s; animation-delay:-6s;  }
-
         @keyframes cloudDrift {
-            0%   { transform:translateX(-300px); opacity:0; }
-            5%   { opacity:.85; }
-            95%  { opacity:.85; }
-            100% { transform:translateX(calc(100vw + 300px)); opacity:0; }
+            0% { transform:translateX(-300px); opacity:0; } 5% { opacity:.8; }
+            95% { opacity:.8; } 100% { transform:translateX(calc(100vw + 300px)); opacity:0; }
         }
 
-        .floatie {
-            position: absolute;
-            animation: floatUp linear infinite;
-            opacity: 0;
-        }
+        .floatie { position:absolute; animation:floatUp linear infinite; opacity:0; }
         @keyframes floatUp {
-            0%   { transform: translateY(0) rotate(0deg);    opacity: 0; }
-            10%  { opacity: 0.75; }
-            90%  { opacity: 0.75; }
-            100% { transform: translateY(-110vh) rotate(15deg); opacity: 0; }
+            0% { transform:translateY(0) rotate(0deg); opacity:0; }
+            10% { opacity:.75; } 90% { opacity:.75; }
+            100% { transform:translateY(-110vh) rotate(15deg); opacity:0; }
         }
 
-        .sparkle {
-            position: absolute;
-            border-radius: 50%;
-            animation: sparklePop ease-in-out infinite;
-        }
-        @keyframes sparklePop {
-            0%,100% { transform:scale(0); opacity:0; }
-            40%,60% { transform:scale(1); opacity:1; }
-        }
+        .sparkle { position:absolute; border-radius:50%; animation:sparklePop ease-in-out infinite; }
+        @keyframes sparklePop { 0%,100%{transform:scale(0);opacity:0;} 40%,60%{transform:scale(1);opacity:1;} }
 
+        /* Card */
         .card-wrapper {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 440px;
-            animation: slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            position:relative; z-index:10; width:100%; max-width:440px;
+            animation:slideUp 0.8s cubic-bezier(0.34,1.56,0.64,1) forwards;
         }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(40px) scale(0.92); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
-        }
+        @keyframes slideUp { from{opacity:0;transform:translateY(40px) scale(0.92);} to{opacity:1;transform:translateY(0) scale(1);} }
 
         .rainbow-bar {
-            height: 10px;
-            background: linear-gradient(90deg,
-                #FF6B6B, #FFB347, #FFD700, #90EE90,
-                #74C7EC, #9B59B6, #FF69B4
-            );
-            border-radius: 20px 20px 0 0;
+            height:10px;
+            background:linear-gradient(90deg,#FFB3D9,#FF6EB4,#C77DFF,#FFB3D9,#FF6EB4,#FFD966,#FFB3D9);
+            border-radius:20px 20px 0 0;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.93);
-            backdrop-filter: blur(20px);
-            padding: 40px 30px 45px;
-            border-radius: 0 0 30px 30px;
-            box-shadow: 0 25px 50px rgba(123, 47, 190, 0.2), 0 0 0 3px rgba(255, 255, 255, 0.8);
-            text-align: center;
+            background:rgba(255,255,255,0.93); backdrop-filter:blur(20px);
+            padding:32px 28px 38px; border-radius:0 0 30px 30px;
+            box-shadow:0 25px 50px rgba(255,110,180,0.2), 0 0 0 3px rgba(255,255,255,0.85);
+            text-align:center;
         }
 
-        /* Coração animado principal */
-        .heart-main {
-            font-size: 4.5rem;
-            display: block;
-            margin-bottom: 15px;
-            animation: heartbeat 1.5s ease-in-out infinite;
+        /* Hero com foto emoldurada em rosa */
+        .hero {
+            position:relative; display:inline-flex;
+            align-items:center; justify-content:center; margin-bottom:16px;
         }
 
+        .sofia-frame {
+            width:90px; height:90px; border-radius:50%; padding:3px;
+            background:linear-gradient(135deg,#FF6EB4,#FFB3D9,#C77DFF,#FF6EB4);
+            background-size:300% 300%;
+            animation:frameShimmer 5s ease infinite, heroFloat 4s ease-in-out infinite;
+            box-shadow:0 0 0 3px rgba(255,255,255,.95), 0 6px 20px rgba(255,110,180,0.4);
+            filter:grayscale(20%);
+        }
+        @keyframes frameShimmer { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+        @keyframes heroFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+
+        .sofia-frame img {
+            width:100%; height:100%; border-radius:50%;
+            object-fit:cover; object-position:center 15%; display:block;
+        }
+
+        /* Coração pulsando ao lado da foto */
+        .heart-badge {
+            position:absolute; bottom:0; right:-12px;
+            font-size:1.6rem;
+            animation:heartbeat 1.5s ease-in-out infinite;
+            filter:drop-shadow(0 2px 6px rgba(255,80,120,0.4));
+        }
         @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            14%  { transform: scale(1.15); }
-            28%  { transform: scale(1); }
-            42%  { transform: scale(1.1); }
-            70%  { transform: scale(1); }
+            0%,100%{transform:scale(1);}
+            14%{transform:scale(1.2);}
+            28%{transform:scale(1);}
+            42%{transform:scale(1.15);}
+            70%{transform:scale(1);}
         }
 
         h1 {
-            font-family: 'Fredoka One', cursive;
-            color: var(--purple-deep);
-            font-size: 2rem;
-            margin-bottom: 12px;
-            text-shadow: 2px 2px 0 rgba(199, 125, 255, 0.25);
+            font-family:'Fredoka One',cursive; color:var(--purple-deep);
+            font-size:1.9rem; margin-bottom:10px;
+            text-shadow:2px 2px 0 rgba(255,110,180,0.2);
         }
 
-        .message {
-            color: #9B6BB5;
-            font-size: 1rem;
-            font-weight: 600;
-            line-height: 1.6;
-            margin-bottom: 8px;
-        }
+        .message { color:#9B6BB5; font-size:.95rem; font-weight:600; line-height:1.65; margin-bottom:6px; }
+        .message-secondary { color:rgba(123,47,190,0.55); font-size:.88rem; font-weight:600; margin-bottom:28px; }
 
-        .message-secondary {
-            color: rgba(123, 47, 190, 0.6);
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 35px;
-        }
+        .divider { display:flex; align-items:center; gap:8px; margin:0 0 22px; color:var(--pink-light); }
+        .divider::before,.divider::after { content:''; flex:1; height:2px; background:linear-gradient(90deg,transparent,var(--pink-light),transparent); border-radius:2px; }
 
-        /* Divider */
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0 0 28px 0;
-            color: var(--pink-light);
-        }
-        .divider::before, .divider::after {
-            content: '';
-            flex: 1;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--pink-light), transparent);
-            border-radius: 2px;
-        }
-
-        /* Quote fofa */
+        /* Card de mensagem especial */
         .quote-box {
-            background: linear-gradient(135deg, rgba(199, 125, 255, 0.08), rgba(255, 110, 180, 0.08));
-            border: 2px dashed rgba(199, 125, 255, 0.3);
-            border-radius: 20px;
-            padding: 22px;
-            margin-bottom: 30px;
+            background:linear-gradient(135deg,rgba(255,110,180,0.07),rgba(199,125,255,0.07));
+            border:2px dashed rgba(255,110,180,0.3); border-radius:22px;
+            padding:22px 20px; margin-bottom:26px; position:relative; overflow:hidden;
         }
-
+        .quote-box::before {
+            content:'💕'; position:absolute; font-size:5rem;
+            opacity:.06; right:-10px; bottom:-12px; pointer-events:none;
+        }
         .quote-text {
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.1rem;
-            color: var(--purple-deep);
-            line-height: 1.5;
+            font-family:'Fredoka One',cursive; font-size:1.05rem;
+            color:var(--purple-deep); line-height:1.6;
         }
-
-        .quote-sub {
-            font-size: 0.8rem;
-            color: rgba(123, 47, 190, 0.5);
-            font-weight: 600;
-            margin-top: 8px;
-        }
+        .quote-sub { font-size:.78rem; color:rgba(123,47,190,0.45); font-weight:600; margin-top:10px; }
 
         /* Botão voltar */
         .btn-voltar {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-            color: white;
-            background: linear-gradient(135deg, var(--purple-deep), var(--purple), var(--pink));
-            background-size: 200% 200%;
-            padding: 15px 32px;
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 0.95rem;
-            font-family: 'Nunito', sans-serif;
-            transition: all 0.3s;
-            box-shadow: 0 6px 20px rgba(123, 47, 190, 0.4);
+            display:inline-flex; align-items:center; justify-content:center; gap:8px;
+            text-decoration:none; color:white;
+            background:linear-gradient(135deg,var(--purple-deep),var(--purple),var(--pink));
+            background-size:200% 200%; padding:15px 32px; border-radius:16px;
+            font-weight:800; font-size:.95rem; font-family:'Nunito',sans-serif;
+            transition:all .3s; box-shadow:0 6px 20px rgba(123,47,190,0.4);
         }
+        .btn-voltar:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(123,47,190,0.5); }
+        .btn-voltar:active { transform:scale(.96); }
 
-        .btn-voltar:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(123, 47, 190, 0.5); }
-        .btn-voltar:active { transform: scale(0.96); }
-
-        .card-footer {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 0.78rem;
-            color: rgba(123, 47, 190, 0.4);
-            font-weight: 600;
-        }
+        .card-footer { text-align:center; margin-top:22px; font-size:.75rem; color:rgba(123,47,190,0.4); font-weight:600; }
     </style>
 </head>
 <body>
@@ -255,7 +171,13 @@
 <div class="card-wrapper">
     <div class="rainbow-bar"></div>
     <div class="card">
-        <span class="heart-main">❤️</span>
+
+        <div class="hero">
+            <div class="sofia-frame">
+                <img src="sofia_card.jpeg" alt="Sofia">
+            </div>
+            <span class="heart-badge">❤️</span>
+        </div>
 
         <h1>Obrigado pelo aviso!</h1>
         <p class="message">Uma pena que não poderá vir,<br>mas agradecemos muito por nos avisar.</p>
@@ -271,9 +193,7 @@
             <div class="quote-sub">— Família da Sofia 🐻</div>
         </div>
 
-        <a href="index.html" class="btn-voltar">
-            ← Voltar ao início
-        </a>
+        <a href="index.html" class="btn-voltar">← Voltar ao início</a>
 
         <div class="card-footer">🌟 Sofia faz 5 anos · 17 de Julho de 2026 🌟</div>
     </div>
@@ -296,7 +216,7 @@
         const s = document.createElement('div');
         s.className = 'sparkle';
         const size = 4 + Math.random() * 7;
-        s.style.cssText = `width:${size}px; height:${size}px; top:${Math.random()*90}vh; left:${Math.random()*100}vw; background:${sparkleColors[i%sparkleColors.length]}; animation-duration:${1.5+Math.random()*2.5}s; animation-delay:${Math.random()*3}s;`;
+        s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*90}vh;left:${Math.random()*100}vw;background:${sparkleColors[i%4]};animation-duration:${1.5+Math.random()*2.5}s;animation-delay:${Math.random()*3}s;`;
         scene.appendChild(s);
     }
 </script>

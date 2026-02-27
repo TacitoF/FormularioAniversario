@@ -128,6 +128,22 @@
             50%       { transform: rotate(5deg); }
         }
 
+        /* Mini foto da Sofia no header */
+        .sofia-mini-frame {
+            width: 42px; height: 42px; border-radius: 50%; padding: 2px;
+            background: linear-gradient(135deg, #FF6EB4, #C77DFF, #FFD966, #FF6EB4);
+            background-size: 300% 300%;
+            animation: frameShimmer 4s ease infinite, bearSway 3s ease-in-out infinite;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.15), 0 4px 12px rgba(199,125,255,0.4);
+            flex-shrink: 0;
+        }
+        @keyframes frameShimmer { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+
+        .sofia-mini-frame img {
+            width:100%; height:100%; border-radius:50%;
+            object-fit:cover; object-position:center 15%; display:block;
+        }
+
         h1 {
             font-family: 'Fredoka One', cursive;
             font-size: 1.4rem;
@@ -189,6 +205,55 @@
         .stat-confirmados .stat-value { color: var(--confirmado); }
         .stat-ausentes .stat-value   { color: var(--ausente); }
         .stat-total .stat-value      { color: var(--yellow); }
+
+        /* Barra de progresso de confirmados */
+        .progress-section {
+            margin-top: 14px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .progress-label {
+            font-size: 0.62rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-sub);
+        }
+
+        .progress-pct {
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.85rem;
+            color: var(--confirmado);
+        }
+
+        .progress-track {
+            height: 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(199,125,255,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #57CC6B, #90E0A0, #FFD966);
+            background-size: 200% 100%;
+            animation: progressShimmer 2s linear infinite;
+            transition: width 1s cubic-bezier(0.34, 1.2, 0.64, 1);
+            width: 0%;
+        }
+
+        @keyframes progressShimmer {
+            0%   { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
 
         /* Filtros */
         .filter-bar {
@@ -465,7 +530,9 @@
     <div class="header">
         <div class="header-row">
             <div class="header-title">
-                <span class="bear-icon">🐻</span>
+                <div class="sofia-mini-frame">
+                    <img src="sofia_card.jpeg" alt="Sofia">
+                </div>
                 <h1>Lista de Convidados</h1>
             </div>
             <button class="btn-refresh" id="btnRefresh" onclick="load()" title="Atualizar">↻</button>
@@ -483,6 +550,17 @@
             <div class="stat-card stat-total">
                 <div class="stat-value" id="countTotal">—</div>
                 <div class="stat-label">Total Pessoas</div>
+            </div>
+        </div>
+
+        <!-- Barra de progresso -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span class="progress-label">✨ Taxa de confirmação</span>
+                <span class="progress-pct" id="progressPct">0%</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
             </div>
         </div>
     </div>
@@ -599,6 +677,19 @@
         `).join('');
     }
 
+    // Anima contadores do 0 até o valor final
+    function animateCount(el, target, duration = 800) {
+        const start = performance.now();
+        const from = parseInt(el.innerText) || 0;
+        function step(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+            el.innerText = Math.round(from + (target - from) * ease);
+            if (progress < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
     async function load() {
         const btn = document.getElementById('btnRefresh');
         btn.classList.add('spinning');
@@ -611,9 +702,17 @@
             const ausentes = allGuests.filter(g => g.presenca === 'Não').length;
             const total = allGuests.reduce((acc, g) => g.presenca === 'Sim' ? acc + 1 + contarAcomp(g.acompanhantes) : acc, 0);
 
-            document.getElementById('countConfirmados').innerText = confirmados;
-            document.getElementById('countAusentes').innerText = ausentes;
-            document.getElementById('countTotal').innerText = total;
+            animateCount(document.getElementById('countConfirmados'), confirmados);
+            animateCount(document.getElementById('countAusentes'), ausentes);
+            animateCount(document.getElementById('countTotal'), total);
+
+            // Barra de progresso
+            const totalRespostas = confirmados + ausentes;
+            const pct = totalRespostas > 0 ? Math.round((confirmados / totalRespostas) * 100) : 0;
+            setTimeout(() => {
+                document.getElementById('progressFill').style.width = pct + '%';
+                document.getElementById('progressPct').innerText = pct + '%';
+            }, 200);
 
             renderList(allGuests);
         } catch (e) {

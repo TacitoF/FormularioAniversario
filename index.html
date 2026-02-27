@@ -185,26 +185,102 @@
             margin-bottom: 28px;
         }
 
-        /* Foto da Sofia */
+        /* ── Foto da Sofia com órbita de estrelas ── */
         .sofia-photo-wrapper {
             position: relative;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 180px;
+            height: 180px;
             margin-bottom: 14px;
+            animation: photoFloat 3.5s ease-in-out infinite;
         }
 
-        /* Moldura circular com gradiente */
+        @keyframes photoFloat {
+            0%, 100% { transform: translateY(0px);  }
+            50%       { transform: translateY(-10px); }
+        }
+
+        /* Anel de órbita visível */
+        .orbit-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px dashed rgba(199, 125, 255, 0.35);
+            animation: ringPulse 3.5s ease-in-out infinite;
+        }
+
+        @keyframes ringPulse {
+            0%, 100% { transform: scale(1);    opacity: 0.4; }
+            50%       { transform: scale(1.04); opacity: 0.8; }
+        }
+
+        /* Container que gira carregando as estrelas */
+        .orbit-stars {
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            animation: orbitSpin 6s linear infinite;
+        }
+
+        @keyframes orbitSpin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        /* Cada estrela na órbita — posicionadas em ângulos fixos */
+        .orbit-star {
+            position: absolute;
+            font-size: 1.1rem;
+            line-height: 1;
+            /* contra-rotaciona para ficar sempre upright */
+            animation: starCounterSpin 6s linear infinite;
+        }
+
+        @keyframes starCounterSpin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(-360deg); }
+        }
+
+        /* Posicionamento de cada estrela ao longo da circunferência */
+        .orbit-star:nth-child(1) { top: 0;    left: 50%; transform: translate(-50%, -50%); }
+        .orbit-star:nth-child(2) { top: 15%;  right: 3%; transform: translate(0, -50%); }
+        .orbit-star:nth-child(3) { bottom: 15%; right: 3%; transform: translate(0, 50%); }
+        .orbit-star:nth-child(4) { bottom: 0;  left: 50%; transform: translate(-50%, 50%); }
+        .orbit-star:nth-child(5) { bottom: 15%; left: 3%; transform: translate(0, 50%); }
+        .orbit-star:nth-child(6) { top: 15%;  left: 3%; transform: translate(0, -50%); }
+
+        /* Overrides counter-spin preservando posição */
+        .orbit-star:nth-child(1) { animation: counterSpin1 6s linear infinite; }
+        .orbit-star:nth-child(2) { animation: counterSpin2 6s linear infinite; }
+        .orbit-star:nth-child(3) { animation: counterSpin3 6s linear infinite; }
+        .orbit-star:nth-child(4) { animation: counterSpin4 6s linear infinite; }
+        .orbit-star:nth-child(5) { animation: counterSpin5 6s linear infinite; }
+        .orbit-star:nth-child(6) { animation: counterSpin6 6s linear infinite; }
+
+        @keyframes counterSpin1 { from { transform: translate(-50%,-50%) rotate(0deg);   } to { transform: translate(-50%,-50%) rotate(-360deg);   } }
+        @keyframes counterSpin2 { from { transform: translate(0,-50%) rotate(0deg);       } to { transform: translate(0,-50%) rotate(-360deg);       } }
+        @keyframes counterSpin3 { from { transform: translate(0,50%) rotate(0deg);        } to { transform: translate(0,50%) rotate(-360deg);        } }
+        @keyframes counterSpin4 { from { transform: translate(-50%,50%) rotate(0deg);     } to { transform: translate(-50%,50%) rotate(-360deg);     } }
+        @keyframes counterSpin5 { from { transform: translate(0,50%) rotate(0deg);        } to { transform: translate(0,50%) rotate(-360deg);        } }
+        @keyframes counterSpin6 { from { transform: translate(0,-50%) rotate(0deg);       } to { transform: translate(0,-50%) rotate(-360deg);       } }
+
+        /* Moldura circular com gradiente animado */
         .sofia-photo-frame {
-            width: 130px;
-            height: 130px;
+            position: relative;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             padding: 4px;
             background: linear-gradient(135deg, #FF6EB4, #C77DFF, #74C7EC, #FFD966, #FF6EB4);
             background-size: 300% 300%;
             animation: frameShimmer 4s ease infinite;
             box-shadow:
-                0 8px 25px rgba(199, 125, 255, 0.45),
-                0 0 0 3px rgba(255,255,255,0.9);
-            display: inline-block;
+                0 0 0 3px rgba(255,255,255,0.95),
+                0 8px 30px rgba(199, 125, 255, 0.5),
+                0 0 40px rgba(255, 110, 180, 0.2);
+            flex-shrink: 0;
         }
 
         @keyframes frameShimmer {
@@ -220,28 +296,6 @@
             object-fit: cover;
             object-position: center 15%;
             display: block;
-        }
-
-        /* Estrelinhas ao redor da foto */
-        .sofia-photo-wrapper::before {
-            content: '✨';
-            position: absolute;
-            top: -6px; right: -4px;
-            font-size: 1.3rem;
-            animation: starSpin 3s ease-in-out infinite;
-        }
-
-        .sofia-photo-wrapper::after {
-            content: '🌟';
-            position: absolute;
-            bottom: 4px; left: -8px;
-            font-size: 1.1rem;
-            animation: starSpin 3s ease-in-out infinite reverse;
-        }
-
-        @keyframes starSpin {
-            0%, 100% { transform: scale(1) rotate(0deg); }
-            50%       { transform: scale(1.3) rotate(20deg); }
         }
 
         .card-header h1 {
@@ -563,6 +617,18 @@
     <div class="card">
         <div class="card-header">
             <div class="sofia-photo-wrapper">
+                <!-- Anel de órbita visível -->
+                <div class="orbit-ring"></div>
+                <!-- Estrelas que giram ao redor -->
+                <div class="orbit-stars">
+                    <span class="orbit-star">⭐</span>
+                    <span class="orbit-star">✨</span>
+                    <span class="orbit-star">🌸</span>
+                    <span class="orbit-star">💫</span>
+                    <span class="orbit-star">🌟</span>
+                    <span class="orbit-star">💜</span>
+                </div>
+                <!-- Foto da Sofia -->
                 <div class="sofia-photo-frame">
                     <img src="sofia_card.jpeg" alt="Sofia">
                 </div>
