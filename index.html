@@ -863,20 +863,28 @@
 
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrVLqqhMK_LdI_DuZYDQavMUFn9lXDRDhbMKPneOQZ_ADA-uRihyN-zpXmf4ph2HyQew/exec';
 
+        const destino = selectPresenca.value === "Sim" ? "confirmado.html" : "obrigado.html";
+
+        const redirecionar = () => { window.location.href = destino; };
+
+        // Timeout de segurança: se o fetch demorar mais de 8s, redireciona mesmo assim
+        const timeoutId = setTimeout(redirecionar, 8000);
+
         fetch(APPS_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dados)
+        })
+        .then(() => {
+            clearTimeout(timeoutId);
+            redirecionar();
+        })
+        .catch(() => {
+            // Mesmo em caso de erro de rede, redireciona para não travar o usuário
+            clearTimeout(timeoutId);
+            redirecionar();
         });
-
-        setTimeout(() => {
-            if (selectPresenca.value === "Sim") {
-                window.location.href = "confirmado.html";
-            } else {
-                window.location.href = "obrigado.html";
-            }
-        }, 350);
     });
 </script>
 </body>
