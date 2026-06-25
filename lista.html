@@ -604,10 +604,10 @@
 
     // Conta acompanhantes: se for número usa direto, se for nomes separados por vírgula conta os nomes
     function contarAcomp(val) {
-        if (!val || val === '0') return 0;
-        const num = parseInt(val);
-        if (!isNaN(num) && String(num) === String(val).trim()) return num;
-        return val.split(',').map(s => s.trim()).filter(s => s).length;
+        if (!val || String(val).trim() === '' || String(val).trim() === '0') return 0;
+        const s = String(val).trim();
+        if (/^\d+$/.test(s)) return parseInt(s, 10) || 0;
+        return s.split(',').map(n => n.trim()).filter(Boolean).length;
     }
 
     // Estrelas de fundo
